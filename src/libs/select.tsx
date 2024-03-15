@@ -64,6 +64,7 @@ type Props = {
   altLabel?: ReactNode;
   name?: string;
   filter?: boolean;
+  isRequired?: boolean;
 };
 
 const isValueArray = (
@@ -114,6 +115,7 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
     title,
     name,
     filter,
+    isRequired = false,
     ...args
   },
   ref,
@@ -150,17 +152,17 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
     return {
       error: `
                 ${BgColor.SUPPORT_300}
-                ${TextColor.PRIMARY_900}      
+                ${TextColor.GREY_900}      
                 ${BorderColor.SUPPORT_500}
                 ${FOCUS.BorderColor.SUPPORT}
-                focus-within:border-support-c700
+                focus-within:border-support-c500
                 `,
       normal: `
                 ${BgColor.TRANSPARENT}
-                ${TextColor.PRIMARY_900}      
-                ${BorderColor.PRIMARY_300}
+                ${TextColor.GREY_900}      
+                ${BorderColor.GREY_50}
                 ${FOCUS.BorderColor.PRIMARY}
-                focus-within:border-primary-c700
+                focus-within:border-primary-c400
                 `,
       disable: `
                 ${BgColor.GREY_100}
@@ -243,11 +245,16 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
 
   return (
     <div className="relative">
+      <div className="mb-1 block text-sm font-medium text-grey-c600 dark:text-white">
+        {title}
+        {isRequired ? (
+          <span className="text-base text-support-c500"> *</span>
+        ) : null}
+      </div>
       <div
         id={id}
         ref={ref}
         className={`
-                    mb-2.5
                     ${TextColor.GREY_700} 
                     ${FontSize.BASE} 
                     min-w-[7.5rem] 
@@ -265,19 +272,20 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
                                 h-fit
                                 w-full 
                                 min-w-0
-                                rounded-3xl
+                                rounded-2xl
                                 border-[2px]
                                 bg-[inherit] 
-                                px-4
-                                pb-2 text-sm
-                                outline-0 sm:text-sm md:text-base 
-                                ${!title ? "mt-2.5 pt-2" : ""}
+                                px-1
+                                py-2
+                                text-sm
+                                outline-0 sm:text-sm md:text-base
+                                ${!title ? "pt-2" : ""}
                                 ${
                                   disabled
                                     ? `${colorAttitude["disable"]} cursor-default`
                                     : error
                                       ? `${colorAttitude["error"]} ${!open ? HOVER.BorderColor.SUPPORT : BorderColor.SUPPORT_700} cursor-pointer`
-                                      : `${colorAttitude["normal"]} ${!open ? HOVER.BorderColor.PRIMARY : BorderColor.PRIMARY_700} cursor-pointer`
+                                      : `${colorAttitude["normal"]} ${!open ? HOVER.BorderColor.PRIMARY : BorderColor.PRIMARY_400} cursor-pointer`
                                 }
                                 ${className}
                             `}
@@ -292,43 +300,6 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
             onChange={() => null}
             className="pointer-events-none absolute hidden select-none opacity-0"
           />
-          {title && (
-            <>
-              <legend
-                className={`
-                                whitespace-nowrap
-                                ${open || disabled ? "cursor-default" : "cursor-pointer"}
-                                ${open || placeholder || selected || select.length > 0 ? "max-w-full px-2" : " max-w-0"} 
-                                ${disabled ? TextColor.GREY_500 : error ? TextColor.SUPPORT_900 : TextColor.PRIMARY_700}
-                                ${FontSize.SM}
-                                ${FontFamily.BOLD}
-                                transition-all
-                                duration-150
-                                ease-linear
-                            `}
-              >
-                <span className="visible inline-block opacity-0">{title}</span>
-              </legend>
-              <label
-                className={`
-                                absolute
-                                flex
-                                items-center
-                                ${open || disabled ? "cursor-default" : "cursor-pointer"}
-                                ${open || placeholder || selected || select.length > 0 ? `left-0 top-0 -translate-y-full px-2` : `bottom-2 left-0 top-0`} translate-x-4
-                                ${disabled ? TextColor.GREY_500 : error ? TextColor.SUPPORT_900 : TextColor.PRIMARY_700}
-                                ${(open || placeholder || selected || select.length > 0) && FontSize.SM}
-                                ${FontFamily.BOLD}
-                                truncate
-                                transition-all
-                                duration-150
-                                ease-linear
-                            `}
-              >
-                {title}
-              </label>
-            </>
-          )}
           <div className="flex w-full items-center justify-between gap-0 px-2 py-1 xl:py-1.5">
             <div className="relative flex w-[inherit] truncate">
               {altLabel ? (
@@ -428,7 +399,7 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
                                         relative 
                                         cursor-pointer 
                                         select-none 
-                                        px-4 py-2
+                                        px-3 py-2
                                         ${select.find((it) => it?.value === option.value) ? `bg-primary-c200 hover:bg-primary-c200` : `hover:bg-primary-c100`}
                                         ${itemClassName}
                                     `}

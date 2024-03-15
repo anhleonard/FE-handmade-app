@@ -287,8 +287,7 @@ export const HOVER = {
 
   BorderColor: {
     GREY: "hover:border-grey-c300",
-    PRIMARY: "hover:border-primary-c400",
-    // SECONDARY: 'hover:bg-secondary-c700',
+    PRIMARY: "hover:border-primary-c200",
     SECONDARY: "hover:opacity-90",
     SUPPORT: "hover:border-support-c700",
   },

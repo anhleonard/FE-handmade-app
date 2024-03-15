@@ -56,7 +56,7 @@ const MyTextArea: React.FC<MyTextAreaProps> = ({
           value={value}
           defaultValue={defaultValue}
           disabled={disabled}
-          className={`dark:focus:border-primary flex w-full items-center justify-between gap-1 rounded-xl border border-grey-c200 px-3 py-2 text-base font-normal text-grey-c900 placeholder-grey-c200 outline-none transition focus:border-primary-c900 active:border-primary-c900${disabled ? "cursor-default border-grey-c200 bg-grey-c100 text-grey-c500" : ""}  dark:border-form-strokedark dark:bg-form-input dark:text-white ${isError ? "border-support-c500 bg-support-c10 text-support-c500 placeholder-support-c200" : ""}`}
+          className={`dark:focus:border-primary flex w-full items-center justify-between gap-1 rounded-2xl border-[2px] border-grey-c50 px-3 py-2 text-base font-normal text-grey-c900 placeholder-grey-c200 outline-none transition hover:border-primary-c200 focus:border-primary-c400 active:border-primary-c400 ${disabled ? "cursor-default border-grey-c200 bg-grey-c100 text-grey-c500" : ""}  dark:border-form-strokedark dark:bg-form-input dark:text-white ${isError ? "border-support-c500 bg-support-c10 text-support-c500 placeholder-support-c200" : ""}`}
         ></textarea>
       </div>
       {(isError && helperText) || (disabled && disabledText) ? (

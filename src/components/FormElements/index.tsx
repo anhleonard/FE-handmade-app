@@ -23,6 +23,9 @@ import { FontFamily, FontSize, TextColor } from "@/enum/setting";
 import SwitchButton from "@/libs/switch-button";
 import { useState } from "react";
 import Select from "@/libs/select";
+import MyDatePicker from "@/libs/date-picker";
+import MyLabel from "@/libs/label";
+import MyTabButton from "@/libs/tab-button";
 
 const OpenPassIcon = () => {
   return (
@@ -56,16 +59,33 @@ const FormElements = () => {
               <MyButton color="primary" disabled>
                 Press here!
               </MyButton>
+              <MyTabButton onClick={() => console.log("first")}>
+                <Typography
+                  fontSize={FontSize.XS}
+                  fontFamily={FontFamily.NORMAL}
+                  textColor={TextColor.WHITE}
+                >
+                  Tất cả
+                </Typography>
+              </MyTabButton>
+              <MyDatePicker />
               <MyTextField
                 id="name"
                 title="Name"
                 placeholder="Input your name"
                 onChange={(value) => console.log(value)}
                 // isError={true}
-                disabled
+                // disabled
                 defaultValue={"xin chao nhe"}
                 helperText={"This is error error error error error error!"}
                 endIcon={<OpenPassIcon />}
+              />
+              <Select
+                title="Select nation"
+                options={[
+                  { label: "VIET NAM", value: "VN" },
+                  { label: "USA", value: "USA" },
+                ]}
               />
               <MyTextArea
                 id="password"
@@ -96,12 +116,6 @@ const FormElements = () => {
                 handleClickSwitchButton={() =>
                   setCheckedSwitchButton(!checkedSwitchButton)
                 }
-              />
-              <Select
-                options={[
-                  { label: "VIET NAM", value: "VN" },
-                  { label: "USA", value: "USA" },
-                ]}
               />
               <div>
                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">
