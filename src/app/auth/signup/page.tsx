@@ -17,6 +17,7 @@ import { AlertState } from "@/enum/defined-type";
 import InputPassword from "@/libs/input-password";
 import { signUpUser } from "@/apis/services/authentication";
 import { useRouter } from "next/navigation";
+import AuthLayout from "../auth-layout";
 
 const validationSchema = yup.object({
   name: yup.string().required("Vui lòng không để trống họ tên."),
@@ -86,142 +87,116 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-primary-c50 py-8">
-      <div className="h-[90vh] w-[80vw] md:px-26 lg:px-16">
-        <div className="grid h-full w-full overflow-hidden rounded-lg lg:grid-cols-2">
-          {/* left content */}
-          <div className="relative col-span-1 hidden h-full w-full lg:block">
-            {/* image */}
-            <Image
-              src="/images/bg-sign-up.svg"
-              alt="bg-signup"
-              fill
-              objectFit="cover"
-            />
+    <AuthLayout>
+      <div className="text-center text-xl font-semibold text-neutral-900 dark:text-neutral-100 md:text-2xl">
+        Đăng ký
+      </div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        {(formik) => (
+          <Form>
+            <div className="space-y-6">
+              <MyPrimaryTextField
+                id="name"
+                name="name"
+                placeholder="Vui lòng nhập họ tên như trên giấy tờ để xác minh"
+                onChange={formik.handleChange}
+                value={formik.values.name}
+                isError={
+                  getIn(formik.touched, "name") &&
+                  Boolean(getIn(formik.errors, "name"))
+                }
+                helperText={
+                  getIn(formik.touched, "name") && getIn(formik.errors, "name")
+                }
+              />
 
-            {/* lớp phủ trắng */}
-            <div className="absolute right-0 top-0 h-full w-1/2">
-              <div className="relative h-full w-full">
-                <div className="absolute inset-0 bg-gradient-to-l from-white to-transparent"></div>
+              <MyPrimaryTextField
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                isError={
+                  getIn(formik.touched, "email") &&
+                  Boolean(getIn(formik.errors, "email"))
+                }
+                helperText={
+                  getIn(formik.touched, "email") &&
+                  getIn(formik.errors, "email")
+                }
+              />
+
+              <MyPrimaryTextField
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="Số điện thoại"
+                onChange={formik.handleChange}
+                value={formik.values.phoneNumber}
+                isError={
+                  getIn(formik.touched, "phoneNumber") &&
+                  Boolean(getIn(formik.errors, "phoneNumber"))
+                }
+                helperText={
+                  getIn(formik.touched, "phoneNumber") &&
+                  getIn(formik.errors, "phoneNumber")
+                }
+                type="text"
+                hasInputNumber
+              />
+
+              <InputPassword
+                id="password"
+                name="password"
+                placeholder="Mật khẩu"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+                isError={
+                  getIn(formik.touched, "password") &&
+                  Boolean(getIn(formik.errors, "password"))
+                }
+                helperText={
+                  getIn(formik.touched, "password") &&
+                  getIn(formik.errors, "password")
+                }
+              />
+
+              <InputPassword
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Nhập lại mật khẩu"
+                onChange={formik.handleChange}
+                value={formik.values.confirmPassword}
+                isError={
+                  getIn(formik.touched, "confirmPassword") &&
+                  Boolean(getIn(formik.errors, "confirmPassword"))
+                }
+                helperText={
+                  getIn(formik.touched, "confirmPassword") &&
+                  getIn(formik.errors, "confirmPassword")
+                }
+              />
+
+              <div className="flex flex-col items-end gap-2">
+                <Button className="!w-full !py-3" type="submit">
+                  Đăng ký
+                </Button>
+                <Link
+                  href={"/auth/signin"}
+                  className="text-xs font-medium text-grey-c700 underline"
+                >
+                  Bạn đã có tài khoản?
+                </Link>
               </div>
             </div>
-          </div>
-
-          {/* right content */}
-          <div className="flex h-full w-full flex-col gap-8 overflow-scroll bg-white px-10 py-12 md:gap-6">
-            <div className="text-center text-xl font-semibold text-neutral-900 dark:text-neutral-100 md:text-2xl">
-              Đăng ký
-            </div>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={onSubmit}
-            >
-              {(formik) => (
-                <Form>
-                  <div className="space-y-6">
-                    <MyPrimaryTextField
-                      id="name"
-                      name="name"
-                      placeholder="Vui lòng nhập họ tên như trên giấy tờ để xác minh"
-                      onChange={formik.handleChange}
-                      value={formik.values.name}
-                      isError={
-                        getIn(formik.touched, "name") &&
-                        Boolean(getIn(formik.errors, "name"))
-                      }
-                      helperText={
-                        getIn(formik.touched, "name") &&
-                        getIn(formik.errors, "name")
-                      }
-                    />
-
-                    <MyPrimaryTextField
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="Email"
-                      onChange={formik.handleChange}
-                      value={formik.values.email}
-                      isError={
-                        getIn(formik.touched, "email") &&
-                        Boolean(getIn(formik.errors, "email"))
-                      }
-                      helperText={
-                        getIn(formik.touched, "email") &&
-                        getIn(formik.errors, "email")
-                      }
-                    />
-
-                    <MyPrimaryTextField
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      placeholder="Số điện thoại"
-                      onChange={formik.handleChange}
-                      value={formik.values.phoneNumber}
-                      isError={
-                        getIn(formik.touched, "phoneNumber") &&
-                        Boolean(getIn(formik.errors, "phoneNumber"))
-                      }
-                      helperText={
-                        getIn(formik.touched, "phoneNumber") &&
-                        getIn(formik.errors, "phoneNumber")
-                      }
-                      type="text"
-                      hasInputNumber
-                    />
-
-                    <InputPassword
-                      id="password"
-                      name="password"
-                      placeholder="Mật khẩu"
-                      onChange={formik.handleChange}
-                      value={formik.values.password}
-                      isError={
-                        getIn(formik.touched, "password") &&
-                        Boolean(getIn(formik.errors, "password"))
-                      }
-                      helperText={
-                        getIn(formik.touched, "password") &&
-                        getIn(formik.errors, "password")
-                      }
-                    />
-
-                    <InputPassword
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      placeholder="Nhập lại mật khẩu"
-                      onChange={formik.handleChange}
-                      value={formik.values.confirmPassword}
-                      isError={
-                        getIn(formik.touched, "confirmPassword") &&
-                        Boolean(getIn(formik.errors, "confirmPassword"))
-                      }
-                      helperText={
-                        getIn(formik.touched, "confirmPassword") &&
-                        getIn(formik.errors, "confirmPassword")
-                      }
-                    />
-
-                    <div className="flex flex-col items-end gap-2">
-                      <Button className="!w-full !py-3" type="submit">
-                        Đăng ký
-                      </Button>
-                      <Link
-                        href={"/auth/signin"}
-                        className="text-xs font-medium text-grey-c700 underline"
-                      >
-                        Bạn đã có tài khoản?
-                      </Link>
-                    </div>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Form>
+        )}
+      </Formik>
+    </AuthLayout>
   );
 };
 
