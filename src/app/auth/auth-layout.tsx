@@ -38,7 +38,7 @@ const AuthLayout = ({ children }: Props) => {
           </div>
 
           {/* right content */}
-          <div className="flex flex-col gap-8 bg-white px-10 pt-16 md:gap-6">
+          <div className="flex h-[90vh] flex-col gap-8 overflow-y-auto bg-white px-10 py-12 md:gap-6">
             {children}
           </div>
         </div>

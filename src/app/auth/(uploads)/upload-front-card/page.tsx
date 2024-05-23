@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import AuthLayout from "../../auth-layout";
 import Button from "@/libs/button";
 import MainInputImage from "@/libs/main-input-image";
+import { useRouter } from "next/navigation";
 
 const UploadFrontCard = () => {
+  const router = useRouter();
   const [previewImage, setPreviewImage] = useState("");
   const [fileImage, setFileImage] = useState<File | null>();
 
@@ -37,7 +39,12 @@ const UploadFrontCard = () => {
             setPreviewImage("");
           }}
         />
-        <Button className="!w-full !max-w-[360px] !py-3">Tiếp tục</Button>
+        <Button
+          className="!w-full !max-w-[360px] !py-3"
+          onClick={() => router.push("/auth/upload-back-card")}
+        >
+          Tiếp tục
+        </Button>
       </div>
     </AuthLayout>
   );

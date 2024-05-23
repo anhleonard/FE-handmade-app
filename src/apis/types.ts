@@ -38,3 +38,7 @@ export type CreateProgressValues = {
 export type UpdateProgressValues = {
   comment: string;
 };
+
+export type CheckTokenValues = {
+  token: string;
+};

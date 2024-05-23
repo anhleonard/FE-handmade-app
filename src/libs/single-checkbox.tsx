@@ -26,7 +26,7 @@ const MySingleCheckBox = ({
       sx={{
         color: COLORS.grey.c700,
         "&.Mui-checked": {
-          color: COLORS.success.c700,
+          color: COLORS.primary.c900,
         },
         "& .MuiSvgIcon-root": { fontSize: size },
       }}

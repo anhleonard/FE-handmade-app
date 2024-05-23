@@ -15,7 +15,7 @@ interface MyTextFieldProps {
   disabled?: boolean;
   disabledText?: string;
   isError?: boolean;
-  helperText?: string | null;
+  helperText?: string | null | ReactNode;
   className?: string;
   value?: string | number;
   defaultValue?: string | number;
@@ -126,7 +126,7 @@ const MyTextField: React.FC<MyTextFieldProps> = ({
           {endIcon ?? null}
         </div>
       </div>
-      {(isError && helperText) || (disabled && disabledText) ? (
+      {(isError && helperText) || (disabled && disabledText) || helperText ? (
         <div className="mt-1 flex items-start justify-start gap-1">
           <WarningAmberRoundedIcon
             sx={{ color: COLORS.support.c500, fontSize: 14 }}
