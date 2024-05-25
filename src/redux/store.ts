@@ -5,6 +5,7 @@ import loadingSlice from "./slices/loadingSlice";
 import alertSlice from "./slices/alertSlice";
 import refetchSlice from "./slices/refetchSlice";
 import secondModalSlice from "./slices/secondModalSlice";
+import idCardSlice from "./slices/idCardSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     loading: loadingSlice,
     alert: alertSlice,
     refetch: refetchSlice,
+    idCards: idCardSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

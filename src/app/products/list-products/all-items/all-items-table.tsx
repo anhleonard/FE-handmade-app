@@ -105,11 +105,6 @@ const AllItemsTable = () => {
     setRowsPage(parseInt(e.target.value));
   };
 
-  console.log({
-    page,
-    rowsPage,
-  });
-
   return (
     <div className="flex flex-col gap-8">
       {/* filter */}
@@ -152,8 +147,8 @@ const AllItemsTable = () => {
               {sellerProducts?.map((product: Product, index: number) => {
                 return (
                   <tr
-                    className="hover:bg-primary-c100 hover:text-grey-c700"
                     key={index}
+                    className="hover:bg-primary-c100 hover:text-grey-c700"
                   >
                     <td className="py-4 pl-3">{product?.productCode}</td>
                     <td className="px-1 py-4">
@@ -168,8 +163,8 @@ const AllItemsTable = () => {
                             {product.productName}
                           </div>
                           <div>
-                            <span className="text-[10px]">Đã bán:</span>{" "}
-                            <span className="text-[10px] font-bold text-primary-c900">
+                            <span className="text-xs">Đã bán:</span>{" "}
+                            <span className="text-xs font-bold text-primary-c900">
                               {product?.soldNumber}
                             </span>
                           </div>

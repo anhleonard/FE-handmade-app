@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import * as yup from "yup";
 import { Form, Formik, getIn } from "formik";
 import axios from "axios";
-import { uploadSingleImage } from "@/apis/services/product";
+import { uploadSingleImage } from "@/apis/services/uploads";
 import { createVariants } from "@/apis/services/variants";
 import { closeModal } from "@/redux/slices/modalSlice";
 import { refetchComponent } from "@/redux/slices/refetchSlice";

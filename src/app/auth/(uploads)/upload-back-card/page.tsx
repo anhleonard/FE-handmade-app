@@ -4,11 +4,55 @@ import AuthLayout from "../../auth-layout";
 import Button from "@/libs/button";
 import MainInputImage from "@/libs/main-input-image";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { AlertState, IDCardState } from "@/enum/defined-type";
+import { AlertStatus } from "@/enum/constants";
+import { openAlert } from "@/redux/slices/alertSlice";
+import { uploadSingleImage } from "@/apis/services/uploads";
+import { addBackCard } from "@/redux/slices/idCardSlice";
 
 const UploadBackCard = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [previewImage, setPreviewImage] = useState("");
   const [fileImage, setFileImage] = useState<File | null>();
+
+  const handleAddCard = async () => {
+    const formData = new FormData();
+
+    if (fileImage) {
+      formData.append("image", fileImage);
+    } else {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: "Không thể upload ảnh!",
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+      return;
+    }
+
+    try {
+      const file = await uploadSingleImage(formData);
+      if (file) {
+        let card: IDCardState = {
+          backCard: file,
+        };
+        dispatch(addBackCard(card));
+        router.push("/auth/store");
+      }
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    }
+  };
 
   return (
     <AuthLayout>
@@ -41,7 +85,7 @@ const UploadBackCard = () => {
         />
         <Button
           className="!w-full !max-w-[360px] !py-3"
-          onClick={() => router.push("/auth/store")}
+          onClick={() => handleAddCard()}
         >
           Tiếp tục
         </Button>

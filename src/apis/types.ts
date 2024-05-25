@@ -42,3 +42,23 @@ export type UpdateProgressValues = {
 export type CheckTokenValues = {
   token: string;
 };
+
+export type CreateStoreValues = {
+  sellerId: number;
+  name: string;
+  avatar: string;
+  description: string;
+  mainBusiness: string;
+  frontCard: string;
+  backCard: string;
+};
+
+export type CreateCollectionValues = {
+  name: string;
+  collectionProductIds: number[];
+};
+
+export type UpdateCollectionValues = {
+  name?: string;
+  collectionProductIds?: number[];
+};

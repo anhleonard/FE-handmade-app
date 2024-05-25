@@ -2,14 +2,10 @@
 import React, { useEffect } from "react";
 import AuthLayout from "../../../../auth-layout";
 import Button from "@/libs/button";
-import { redirect, useParams, useRouter } from "next/navigation";
-import { AlertState } from "@/enum/defined-type";
-import { AlertStatus } from "@/enum/constants";
+import { useParams, useRouter } from "next/navigation";
+import { IDCardState } from "@/enum/defined-type";
 import { useDispatch } from "react-redux";
-import { openAlert } from "@/redux/slices/alertSlice";
-import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
-import { CheckTokenValues } from "@/apis/types";
-import { checkingAlreadyToken } from "@/apis/services/tokens";
+import { addSellerId } from "@/redux/slices/idCardSlice";
 
 const UploadCardPage = () => {
   const router = useRouter();
@@ -19,36 +15,43 @@ const UploadCardPage = () => {
   const token = params?.token?.toString();
   const sellerId = parseInt(params?.sellerId.toString());
 
-  const checkAlreadyToken = async () => {
-    try {
-      dispatch(openLoading());
-      const variables: CheckTokenValues = {
-        token: token,
-      };
-
-      const res = await checkingAlreadyToken(variables);
-
-      if (res === false) {
-        router.push(`/auth/uploads/${token}`);
-      } else {
-        dispatch(closeLoading());
-      }
-    } catch (error: any) {
-      let alert: AlertState = {
-        isOpen: true,
-        title: "LỖI",
-        message: error?.response?.data?.message,
-        type: AlertStatus.ERROR,
-      };
-      dispatch(openAlert(alert));
-    }
-    //  finally {
-    //   dispatch(closeLoading());
-    // }
+  const handleAddSellerID = () => {
+    let seller: IDCardState = {
+      sellerId: sellerId,
+    };
+    dispatch(addSellerId(seller));
   };
 
+  // const checkAlreadyToken = async () => {
+  //   try {
+  //     dispatch(openLoading());
+  //     const variables: CheckTokenValues = {
+  //       token: token,
+  //     };
+
+  //     const res = await checkingAlreadyToken(variables);
+
+  //     if (res === false) {
+  //       router.push(`/auth/uploads/${token}`);
+  //     } else {
+  //       dispatch(closeLoading());
+  //     }
+  //   } catch (error: any) {
+  //     let alert: AlertState = {
+  //       isOpen: true,
+  //       title: "LỖI",
+  //       message: error?.response?.data?.message,
+  //       type: AlertStatus.ERROR,
+  //     };
+  //     dispatch(openAlert(alert));
+  //   }
+  //   //  finally {
+  //   //   dispatch(closeLoading());
+  //   // }
+  // };
+
   useEffect(() => {
-    checkAlreadyToken();
+    handleAddSellerID();
   }, []);
 
   return (

@@ -257,3 +257,17 @@ export type Progress = {
   updatedAt: Date;
   user: User;
 };
+
+// ID CARDS
+export type IDCardState = {
+  sellerId?: number;
+  frontCard?: string;
+  backCard?: string;
+};
+
+export type Collection = {
+  id: number;
+  name: string;
+  store: Store;
+  products: Product[];
+};

@@ -18,7 +18,6 @@ import { getCategories } from "@/apis/services/categories";
 import { AlertState } from "@/enum/defined-type";
 import { openAlert } from "@/redux/slices/alertSlice";
 import FormatEndCurrencyIcon from "@/libs/format-end-currency-icon";
-import { createProduct, uploadImages } from "@/apis/services/product";
 import storage from "@/apis/storage";
 import { useRouter } from "next/navigation";
 import { getVariantCategoriesByUser } from "@/apis/services/variant-category";
@@ -30,6 +29,8 @@ import { openModal } from "@/redux/slices/modalSlice";
 import { RootState } from "@/redux/store";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { deleteVariant } from "@/apis/services/variants";
+import { uploadImages } from "@/apis/services/uploads";
+import { createProduct } from "@/apis/services/product";
 
 const validationSchema = yup.object({
   productName: yup.string().required("Vui lòng không để trống trường này."),
@@ -211,7 +212,7 @@ const CreateProductScreen = () => {
   };
 
   return (
-    <div className="w-full rounded-lg bg-white px-4 py-2">
+    <div className="w-full rounded-lg bg-white px-8 py-4">
       <div className="mb-5 flex flex-col gap-3">
         <div className="text-lg font-bold text-grey-c900">Tạo sản phẩm mới</div>
         <div className="item-start flex gap-1 md:items-center">
