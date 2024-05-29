@@ -1,7 +1,8 @@
 import { updateProgress } from "@/apis/services/progresses";
 import storage from "@/apis/storage";
 import { UpdateProgressValues } from "@/apis/types";
-import { AlertStatus, AuctionStatus } from "@/enum/constants";
+import { COLORS } from "@/enum/colors";
+import { AlertStatus, AuctionStatus, Role } from "@/enum/constants";
 import { AlertState, Progress } from "@/enum/defined-type";
 import { formatDate } from "@/enum/functions";
 import Button from "@/libs/button";
@@ -60,13 +61,20 @@ const ContentUpdatedWork = ({
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-3">
           <Avatar
-            alt="avatar"
-            sx={{ width: 46, height: 46 }}
-            src="https://truyenhinhthanhhoa.qltns.mediacdn.vn/thumb_w/640/2020/02/19/21/iu-18.jpg"
-          />
+            sx={{
+              bgcolor:
+                progress?.user?.role === Role.SELLER
+                  ? COLORS.primary.c800
+                  : COLORS.blue.c800,
+              width: 42,
+              height: 42,
+            }}
+          >
+            {progress?.user?.role === Role.SELLER ? "T" : "K"}
+          </Avatar>
           <div className="flex flex-col items-start gap-1">
             <div className="font-bold text-grey-c900">
-              {progress?.user?.name}
+              {progress?.user?.role === Role.SELLER ? "Tôi" : "Khách"}
             </div>
             <div className="flex flex-row items-center gap-2 text-grey-c900">
               <div className="text-xs">{formatDate(progress?.createdAt)}</div>

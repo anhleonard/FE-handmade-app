@@ -5,23 +5,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import CheckIcon from "@mui/icons-material/Check";
-// import {
-//   DELETE_SYSTEM_USER,
-//   RESET_PASSWORD_SYSTEM_USER,
-//   LOGOUT,
-//   CHANGE_PRODUCT_STATUS,
-//   DELETE_PRODUCT,
-//   CONFIRM_CONTACT_US,
-//   CONFIRM_UPDATE_VERSION,
-//   CONFIRM_OTHERS_UPDATE,
-//   CONFIRM_APP_MAINTENANCE,
-//   CONFIRM_SUPEND_CUSTOMER,
-//   CONFIRM_RESET_CUSTOMER_PASSWORD,
-//   DELETE_ASSESSMENT_LCY,
-//   CREATE_WHITELIST_RECORD,
-//   CLOSE_TICKET,
-// } from "@/redux/actions/action";
-// import storage from "@/services/storage";
 import { useRouter } from "next/navigation";
 import Typography from "@/libs/typography";
 import { closeConfirm } from "@/redux/slices/confirmSlice";
@@ -39,55 +22,6 @@ export default function ConfirmModal() {
     if (confirmData.onConfirm) {
       confirmData.onConfirm();
     }
-    // switch (confirmData.feature) {
-    //   case LOGOUT:
-    //     storage.clearLocal();
-    //     router.replace("/login");
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case DELETE_SYSTEM_USER:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case RESET_PASSWORD_SYSTEM_USER:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case CHANGE_PRODUCT_STATUS:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case DELETE_PRODUCT:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case CREATE_WHITELIST_RECORD:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case CONFIRM_CONTACT_US:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case CONFIRM_UPDATE_VERSION:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case CONFIRM_OTHERS_UPDATE:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case CONFIRM_APP_MAINTENANCE:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case CONFIRM_SUPEND_CUSTOMER:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case CONFIRM_RESET_CUSTOMER_PASSWORD:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case DELETE_ASSESSMENT_LCY:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   case CLOSE_TICKET:
-    //     dispatch(closeConfirm());
-    //     break;
-    //   default:
-    //     dispatch(closeConfirm());
-    //     break;
-    // }
   };
 
   return (

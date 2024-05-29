@@ -109,11 +109,11 @@ const MyDetailSellerAuctionScreen = ({ auctionId }: Props) => {
                           new Date(b.createdAt).getTime() -
                           new Date(a.createdAt).getTime(),
                       )
-                      .map((progress, index) => {
+                      .map((progress) => {
                         if (!progress) return null;
                         return (
                           <ContentUpdatedWork
-                            key={index}
+                            key={progress?.id}
                             status={auction?.status as AuctionStatus}
                             progress={progress}
                             handleRefetch={handleRefetch}

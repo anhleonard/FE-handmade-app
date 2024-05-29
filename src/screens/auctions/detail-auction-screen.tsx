@@ -75,6 +75,7 @@ const DetailAuctionsScreen = ({ auctionId }: Props) => {
               <DetailAuction
                 auction={auction}
                 status={auction?.status as AuctionStatus}
+                handleRefetch={handleRefetch}
               />
             )}
             {auction && (
