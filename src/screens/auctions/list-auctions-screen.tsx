@@ -84,9 +84,9 @@ const ListAuctionsScreen = () => {
             <MyTextField
               id="auction-search-field"
               placeholder="Nhập keyword mà bạn muốn tìm kiếm"
-              // onChange={(event) => setTitle(event.target.value)}
+              onChange={(event) => setTitle(event.target.value)}
               endIcon={
-                <div>
+                <div onClick={() => getAllFilterAuctions()}>
                   <SearchRoundedIcon sx={{ color: COLORS.grey.c400 }} />
                 </div>
               }

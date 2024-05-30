@@ -250,17 +250,19 @@ const DetailAuction = ({
               </ListItem>
             )}
 
-            <ListItem
-              className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
-              disablePadding
-            >
-              <div className="flex flex-col gap-1">
-                <div className="font-bold text-grey-c900">Giá chốt</div>
-                <div className="font-medium text-primary-c900">
-                  {bidder?.bidderMoney && formatCurrency(bidder?.bidderMoney)}
+            {status !== AuctionStatus.AUCTIONING && (
+              <ListItem
+                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
+                disablePadding
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold text-grey-c900">Giá chốt</div>
+                  <div className="font-medium text-primary-c900">
+                    {bidder?.bidderMoney && formatCurrency(bidder?.bidderMoney)}
+                  </div>
                 </div>
-              </div>
-            </ListItem>
+              </ListItem>
+            )}
 
             {status === AuctionStatus.COMPLETED && (
               <ListItem

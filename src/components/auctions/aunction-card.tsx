@@ -27,16 +27,17 @@ const AunctionCard = ({ auction }: Props) => {
             <div className="text-base font-semibold text-primary-c900">
               {auction?.name}
             </div>
-            <MyLabel type="warning">
-              Còn {calculateRemainingDays(auction?.closedDate)} ngày
-            </MyLabel>
+            {calculateRemainingDays(auction?.closedDate) > 0 ? (
+              <MyLabel type="warning">
+                Còn {calculateRemainingDays(auction?.closedDate)} ngày
+              </MyLabel>
+            ) : (
+              <MyLabel type="error">Quá hạn</MyLabel>
+            )}
           </div>
           <div className="flex flex-row items-center gap-3">
             <MyLabel type="success">
               Max: {formatCurrency(auction?.maxAmount)}
-            </MyLabel>
-            <MyLabel type="success">
-              Dự kiến làm: {auction?.maxDays} ngày
             </MyLabel>
           </div>
         </div>
