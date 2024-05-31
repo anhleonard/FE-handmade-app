@@ -113,7 +113,9 @@ const DetailProductModal = ({ productId, type }: Props) => {
             </div>
             <div className="flex flex-row items-center gap-3">
               {product?.category.map((cate: Category, index: number) => {
-                return <Chip label={cate.title} color="warning"></Chip>;
+                return (
+                  <Chip key={index} label={cate.title} color="warning"></Chip>
+                );
               })}
             </div>
           </div>

@@ -1,5 +1,11 @@
 "use client";
-import { AlertStatus, ProductStatus, mainCategories } from "@/enum/constants";
+import {
+  AlertStatus,
+  Page,
+  ProductStatus,
+  mainCategories,
+  rowsPerPage,
+} from "@/enum/constants";
 import {
   DeleteIcon,
   DetailIcon,
@@ -8,7 +14,7 @@ import {
   SearchIcon,
 } from "@/enum/icons";
 import MyTextField from "@/libs/text-field";
-import MySelect from "@/libs/select";
+import MySelect, { Item } from "@/libs/select";
 import Image from "next/image";
 import { FontFamily, FontSize, SCREEN } from "@/enum/setting";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +23,11 @@ import { Tooltip } from "@mui/material";
 import DetailProductModal from "../../modals/detail-product-modal";
 import { closeConfirm, openConfirm } from "@/redux/slices/confirmSlice";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
-import { deleteProduct, getPendingProducts } from "@/apis/services/product";
+import {
+  deleteProduct,
+  filterSellerProducts,
+  getPendingProducts,
+} from "@/apis/services/product";
 import storage from "@/apis/storage";
 import { AlertState, Category, Product } from "@/enum/defined-type";
 import { openAlert } from "@/redux/slices/alertSlice";
@@ -27,6 +37,7 @@ import { headerUrl } from "@/apis/services/authentication";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { RootState } from "@/redux/store";
 import EditTotalProductModal from "../../modals/edit-total-product-modal";
+import { MyPagination } from "@/libs/pagination";
 
 const labelOptions = [
   { label: "Tên sản phẩm", value: "ITEM_NAME" },
@@ -36,7 +47,12 @@ const labelOptions = [
 const PendingItemsTable = () => {
   const dispatch = useDispatch();
   const [pendingProducts, setPendingProducts] = useState<Product[]>([]);
+  const [page, setPage] = useState(Page);
+  const [rowsPage, setRowsPage] = useState(rowsPerPage);
+  const [count, setCount] = useState(0);
   const refetchQueries = useSelector((state: RootState) => state.refetch.time);
+  const [selectedOption, setSelectedOption] = useState<Item>(labelOptions[0]);
+  const [searchText, setSearchText] = useState<string>("");
 
   const handleOpenDetailModal = (productId: number) => {
     const modal = {
@@ -96,13 +112,26 @@ const PendingItemsTable = () => {
     return await deleteProduct(id, token);
   };
 
-  // get all pending products by seller token
-  const getAllPendingProducts = async () => {
+  // get all seller products by seller token
+  const getAllSellerProducts = async () => {
     try {
       dispatch(openLoading());
       const token = storage.getLocalAccessToken();
-      const res = await getPendingProducts(token);
-      setPendingProducts(res);
+      const res = await filterSellerProducts(token, {
+        limit: rowsPage,
+        page: page,
+        status: ProductStatus.PENDING,
+        ...(selectedOption === labelOptions[0] &&
+          searchText !== "" && {
+            productName: searchText,
+          }),
+        ...(selectedOption === labelOptions[1] &&
+          searchText !== "" && {
+            productCode: searchText,
+          }),
+      });
+      setCount(res?.total ?? 0);
+      setPendingProducts(res?.data);
     } catch (error: any) {
       let alert: AlertState = {
         isOpen: true,
@@ -117,14 +146,31 @@ const PendingItemsTable = () => {
   };
 
   useEffect(() => {
-    getAllPendingProducts();
-  }, [refetchQueries]);
+    getAllSellerProducts();
+  }, [refetchQueries, page, rowsPage]);
+
+  const handlePageChange = (page: number) => {
+    setPage(page);
+  };
+  const handleRowPerPageChange = (e: any) => {
+    setPage(Page);
+    setRowsPage(parseInt(e.target.value));
+  };
+
+  const handleRefetch = () => {
+    dispatch(refetchComponent());
+  };
 
   const handleOpenEditModal = async (product: Product) => {
     const modal = {
       isOpen: true,
       title: "Chỉnh sửa sản phẩm",
-      content: <EditTotalProductModal product={product} />,
+      content: (
+        <EditTotalProductModal
+          product={product}
+          handleRefetch={handleRefetch}
+        />
+      ),
       screen: SCREEN.LG,
     };
     dispatch(openModal(modal));
@@ -135,20 +181,26 @@ const PendingItemsTable = () => {
       {/* filter */}
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-1">
-          <MySelect options={labelOptions} selected={labelOptions[0].value} />
-          <MyTextField
-            id="searchItem"
-            endIcon={<SearchIcon />}
-            placeholder="Nhập nội dung tìm kiếm"
-            className="w-[300px]"
-          />
-        </div>
-        <div className="flex flex-row items-center gap-3">
-          <div>Danh mục</div>
           <MySelect
-            options={mainCategories}
-            selected={mainCategories[0].value}
+            options={labelOptions}
+            selected={selectedOption.value}
+            onSelectItem={(item: Item) => setSelectedOption(item)}
           />
+          <form
+            className="flex-1 text-slate-900 dark:text-slate-100"
+            onSubmit={(e) => {
+              handleRefetch();
+              e.preventDefault();
+            }}
+          >
+            <MyTextField
+              id="searchItem"
+              endIcon={<SearchIcon />}
+              placeholder="Nhập nội dung tìm kiếm"
+              className="w-[300px]"
+              onChange={(event) => setSearchText(event.target.value)}
+            />
+          </form>
         </div>
       </div>
       {/* table */}
@@ -262,6 +314,13 @@ const PendingItemsTable = () => {
           </table>
         </div>
       </div>
+      <MyPagination
+        page={page}
+        handlePageChange={handlePageChange}
+        handleRowPerPageChange={handleRowPerPageChange}
+        total={count}
+        rowsPerPage={rowsPage}
+      />
     </div>
   );
 };

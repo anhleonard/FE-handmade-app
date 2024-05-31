@@ -76,7 +76,7 @@ const SingleChoiceVariant = ({
         <div className="flex flex-1 flex-row items-end gap-4 pr-4">
           <MyTextField
             type="text"
-            id="price"
+            id={`price-${variant?.id}`}
             name="price"
             title="Giá tiền"
             placeholder="Giá tiền bán của 1 sản phẩm"
@@ -91,7 +91,7 @@ const SingleChoiceVariant = ({
             }}
           />
           <MyPrimaryTextField
-            id="inventoryNumber"
+            id={`inventoryNumber-${variant?.id}`}
             type="number"
             minNumber={1}
             title="Tồn kho"

@@ -1,6 +1,9 @@
 import { headerUrl } from "@/apis/services/authentication";
-import { updateProductVariants } from "@/apis/services/product";
-import { uploadSingleImage } from "@/apis/services/uploads";
+import {
+  updateProductBySeller,
+  updateProductVariants,
+} from "@/apis/services/product";
+import { uploadImages, uploadSingleImage } from "@/apis/services/uploads";
 import { updateSimpleVariant, updateVariant } from "@/apis/services/variants";
 import storage from "@/apis/storage";
 import MyEditMultipleChoices from "@/components/variants/edit-multiple-choices";
@@ -14,10 +17,10 @@ import MyTextField from "@/libs/text-field";
 import UploadImage from "@/libs/upload-image";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
+import { closeModal } from "@/redux/slices/modalSlice";
 import CateGoriesPicker, {
   Label,
 } from "@/screens/products/selected-categories";
-import { Chip } from "@mui/material";
 import { UploadFile } from "antd";
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
@@ -25,9 +28,10 @@ import { useDispatch } from "react-redux";
 
 type Props = {
   product: Product;
+  handleRefetch: () => void;
 };
 
-const EditTotalProductModal = ({ product }: Props) => {
+const EditTotalProductModal = ({ product, handleRefetch }: Props) => {
   const dispatch = useDispatch();
   const [isClassified, setIsClassified] = useState<boolean>(
     product?.isMultipleClasses,
@@ -136,6 +140,79 @@ const EditTotalProductModal = ({ product }: Props) => {
   const onSubmit = async (values: any) => {
     try {
       dispatch(openLoading());
+      const token = storage.getLocalAccessToken();
+      if (product?.isMultipleClasses) {
+        await handleChangeVariants();
+        const { price, inventoryNumber, ...updatedVariables } = values;
+        const res = await updateProductBySeller(
+          product.id,
+          updatedVariables,
+          token,
+        );
+        if (res) {
+          dispatch(closeModal());
+          handleRefetch();
+        }
+      } else {
+        // ---------- START EDIT IMAGES ---------- //
+        let newUrls: string[] = [];
+
+        let rawFiles: UploadFile[] = [];
+        if (fileList?.length) rawFiles = fileList;
+        else if (defaultImages?.length) rawFiles = defaultImages;
+
+        if (rawFiles?.length) {
+          //lọc lấy các ảnh default
+          const urlImages = rawFiles
+            .filter((file) => file?.originFileObj === undefined)
+            ?.map((file) => file.name);
+
+          //tạo url cho các ảnh mới
+          const formData = new FormData();
+
+          if (rawFiles && rawFiles.length >= 1) {
+            for (let i = 0; i < rawFiles.length; i++) {
+              if (rawFiles[i]?.originFileObj) {
+                const fileObj = rawFiles[i].originFileObj;
+                if (fileObj) {
+                  formData.append(`files`, fileObj);
+                }
+              }
+            }
+          }
+
+          const res = await uploadImages(formData);
+          if (res) {
+            newUrls = [...urlImages, ...res];
+          } else {
+            let alert: AlertState = {
+              isOpen: true,
+              title: "LỖI",
+              message: "Lỗi upload ảnh!",
+              type: AlertStatus.ERROR,
+            };
+            dispatch(openAlert(alert));
+
+            return;
+          }
+        }
+        // ---------- END EDIT IMAGES ---------- //
+
+        const params = {
+          ...values,
+          price: parseInt(values?.price),
+          ...(newUrls?.length && {
+            images: newUrls,
+          }),
+        };
+
+        const res = await updateProductBySeller(product.id, params, token);
+
+        if (res) {
+          dispatch(closeModal());
+          handleRefetch();
+        }
+      }
     } catch (error: any) {
       let alert: AlertState = {
         isOpen: true,
@@ -298,7 +375,6 @@ const EditTotalProductModal = ({ product }: Props) => {
                   color="primary"
                   type="submit"
                   className="h-12 w-1/3 text-xs md:text-sm lg:text-base"
-                  onClick={() => handleChangeVariants()}
                 >
                   Cập nhật
                 </Button>

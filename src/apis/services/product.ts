@@ -13,6 +13,20 @@ export const createProduct = async (variables: any, token: string) => {
     .then((res) => res.data);
 };
 
+export const filterSellerProducts = async (token: string, query: any) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const queryString = new URLSearchParams(query).toString();
+
+  return await axios
+    .get(`${headerUrl}/products/filter-seller-products?${queryString}`, config)
+    .then((res) => res.data);
+};
+
 export const getSellerProducts = async (token: string, query: any) => {
   const config = {
     headers: {
