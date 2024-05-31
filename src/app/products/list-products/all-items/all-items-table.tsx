@@ -57,10 +57,10 @@ const labelOptions = [
 
 const AllItemsTable = () => {
   const dispatch = useDispatch();
+  const [sellerProducts, setSellerProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(Page);
   const [rowsPage, setRowsPage] = useState(rowsPerPage);
   const [count, setCount] = useState(0);
-  const [sellerProducts, setSellerProducts] = useState<Product[]>([]);
   const refetchQueries = useSelector((state: RootState) => state.refetch.time);
   const [selectedOption, setSelectedOption] = useState<Item>(labelOptions[0]);
   const [searchText, setSearchText] = useState<string>("");
