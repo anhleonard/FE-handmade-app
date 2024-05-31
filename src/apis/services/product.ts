@@ -106,3 +106,15 @@ export const updateProductBySeller = async (
     .put(`${headerUrl}/products/update/${id}`, variables, config)
     .then((res) => res.data);
 };
+
+export const updateProductVariants = async (id: number, token: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return await axios
+    .put(`${headerUrl}/products/update-product-variants/${id}`, null, config)
+    .then((res) => res.data);
+};

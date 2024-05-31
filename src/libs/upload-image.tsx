@@ -17,9 +17,14 @@ const getBase64 = (file: FileType): Promise<string> =>
 type Props = {
   fileList: UploadFile[];
   setFileList: any;
+  defaultFileList?: UploadFile[];
 };
 
-const UploadImage: React.FC<Props> = ({ fileList, setFileList }: Props) => {
+const UploadImage: React.FC<Props> = ({
+  fileList,
+  setFileList,
+  defaultFileList,
+}: Props) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
@@ -54,11 +59,10 @@ const UploadImage: React.FC<Props> = ({ fileList, setFileList }: Props) => {
   return (
     <>
       <Upload
-        // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture-card"
-        fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}
+        defaultFileList={defaultFileList}
       >
         {fileList.length >= 8 ? null : uploadButton}
       </Upload>

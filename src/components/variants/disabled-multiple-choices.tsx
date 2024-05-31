@@ -1,12 +1,12 @@
 import { ClassifiedClass, Variant } from "@/enum/defined-type";
 import React, { useState } from "react";
-import MyLabel from "./label";
-import Button from "./button";
-import MyTextField from "./text-field";
-import MyTextAction from "./text-action";
-import MyDisplayImage from "./display-image";
-import MyPrimaryTextField from "./primary-text-field";
-import MyDefaultText from "./default-text";
+import MyLabel from "../../libs/label";
+import Button from "../../libs/button";
+import MyTextField from "../../libs/text-field";
+import MyTextAction from "../../libs/text-action";
+import MyDisplayImage from "../../libs/display-image";
+import MyPrimaryTextField from "../../libs/primary-text-field";
+import MyDefaultText from "../../libs/default-text";
 import { formatCurrency, formatVariant } from "@/enum/functions";
 import { headerUrl } from "@/apis/services/authentication";
 
@@ -25,7 +25,6 @@ const MyDisabledMultipleChoices = ({
     <div className="flex w-full flex-col gap-8 border-b-2 border-t-2 border-grey-c50 pb-8 pt-5">
       {variants.map((variant: Variant, index: number) => {
         const className = formatVariant(variant.variantItems);
-        console.log({ className });
         return (
           <div
             key={index}

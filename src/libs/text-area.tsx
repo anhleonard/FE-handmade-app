@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import MyIcon from "./my-icon";
 
 interface MyTextAreaProps {
@@ -18,6 +16,7 @@ interface MyTextAreaProps {
   value?: string | number;
   defaultValue?: string | number;
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement & HTMLInputElement>;
+  rows?: number;
 }
 
 const MyTextArea: React.FC<MyTextAreaProps> = ({
@@ -35,6 +34,7 @@ const MyTextArea: React.FC<MyTextAreaProps> = ({
   value,
   defaultValue,
   onChange = () => null,
+  rows = 3,
 }) => {
   return (
     <div className={`${width}`}>
@@ -48,7 +48,7 @@ const MyTextArea: React.FC<MyTextAreaProps> = ({
         <textarea
           id={id}
           name={name}
-          rows={3}
+          rows={rows}
           placeholder={placeholder}
           onChange={onChange}
           value={value}

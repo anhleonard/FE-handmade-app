@@ -103,6 +103,14 @@ export type Variant = {
   variantItems: Array<VariantItem>;
 };
 
+export type UpdateVariant = {
+  id: number;
+  unitPrice: number;
+  inventoryNumber: number;
+  fileImage?: File | null | undefined;
+  image?: string;
+};
+
 export type Product = {
   id: number;
   productName: string;

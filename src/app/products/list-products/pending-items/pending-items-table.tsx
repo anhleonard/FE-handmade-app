@@ -26,6 +26,7 @@ import { formatCurrency, formatDate } from "@/enum/functions";
 import { headerUrl } from "@/apis/services/authentication";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { RootState } from "@/redux/store";
+import EditTotalProductModal from "../../modals/edit-total-product-modal";
 
 const labelOptions = [
   { label: "Tên sản phẩm", value: "ITEM_NAME" },
@@ -118,6 +119,16 @@ const PendingItemsTable = () => {
   useEffect(() => {
     getAllPendingProducts();
   }, [refetchQueries]);
+
+  const handleOpenEditModal = async (product: Product) => {
+    const modal = {
+      isOpen: true,
+      title: "Chỉnh sửa sản phẩm",
+      content: <EditTotalProductModal product={product} />,
+      screen: SCREEN.LG,
+    };
+    dispatch(openModal(modal));
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -224,6 +235,14 @@ const PendingItemsTable = () => {
                             onClick={() => handleOpenDetailModal(product?.id)}
                           >
                             <DetailIcon />
+                          </div>
+                        </Tooltip>
+                        <Tooltip title="Chỉnh sửa sản phẩm">
+                          <div
+                            className="hover:cursor-pointer"
+                            onClick={() => handleOpenEditModal(product)}
+                          >
+                            <EditIcon />
                           </div>
                         </Tooltip>
                         <Tooltip title="Xóa">

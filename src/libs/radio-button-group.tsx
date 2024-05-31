@@ -57,9 +57,10 @@ export default function MyRadioButtonsGroup({
           }}
           className="flex flex-row items-center gap-6"
         >
-          {options?.map((item) => {
+          {options?.map((item, index) => {
             return (
               <FormControlLabel
+                key={index}
                 value={item.value}
                 disabled={disabled}
                 control={

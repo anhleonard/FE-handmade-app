@@ -34,3 +34,19 @@ export const updateVariant = async (
     .put(`${headerUrl}/variants/update/${id}`, variables, config)
     .then((res) => res.data);
 };
+
+export const updateSimpleVariant = async (
+  id: number,
+  variables: any,
+  token: string,
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return await axios
+    .put(`${headerUrl}/variants/update-simple-variant/${id}`, variables, config)
+    .then((res) => res.data);
+};

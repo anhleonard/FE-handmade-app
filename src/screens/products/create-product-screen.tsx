@@ -338,20 +338,6 @@ const CreateProductScreen = () => {
                 }
               />
 
-              <div className="flex flex-row items-center gap-8">
-                <MyDatePicker
-                  id=""
-                  label="Ngày sản xuất"
-                  placeholder="-- Lựa chọn NSX --"
-                  isRequired
-                />
-                <MyDatePicker
-                  id=""
-                  label="Ngày sản xuất"
-                  placeholder="-- Lựa chọn HSD --"
-                  isRequired
-                />
-              </div>
               <div className="my-1 flex flex-row gap-8">
                 <MyRadioButtonsGroup
                   label="Có phải hàng hóa nặng không?"

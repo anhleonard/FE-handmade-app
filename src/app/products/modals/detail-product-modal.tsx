@@ -1,13 +1,13 @@
 import { headerUrl } from "@/apis/services/authentication";
 import { singleProduct } from "@/apis/services/product";
 import GiftCollapse from "@/components/gifts/gift-collapse";
+import MyDisabledMultipleChoices from "@/components/variants/disabled-multiple-choices";
 import { AlertStatus, ProductStatus } from "@/enum/constants";
 import { AlertState, Category, Product } from "@/enum/defined-type";
 import { formatCurrency, formatDate } from "@/enum/functions";
 import Button from "@/libs/button";
 import MyDatePicker from "@/libs/date-picker";
 import MyDefaultText from "@/libs/default-text";
-import MyDisabledMultipleChoices from "@/libs/disabled-multiple-choices";
 import MyDisplayImage from "@/libs/display-image";
 import MyPrimaryTextField from "@/libs/primary-text-field";
 import MySelect from "@/libs/select";

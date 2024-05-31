@@ -243,7 +243,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 "text-white"
                               }`}
                             >
-                              <div className="text-sm">Danh mục</div>
+                              <div className="text-sm">Danh sách phân loại</div>
                             </Link>
                           </li>
                         </ul>
