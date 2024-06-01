@@ -49,15 +49,15 @@ const options: ApexOptions = {
   ],
 };
 
-const ChartThree: React.FC = () => {
+const PieChart: React.FC = () => {
   const [state, setState] = useState<ChartThreeState>({
-    series: [65, 34, 12, 56],
+    series: [65, 34, 12, 56, 15],
   });
 
   const handleReset = () => {
     setState((prevState) => ({
       ...prevState,
-      series: [65, 34, 12, 56],
+      series: [65, 34, 12, 56, 15],
     }));
   };
   handleReset;
@@ -121,7 +121,7 @@ const ChartThree: React.FC = () => {
       <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
         <div className="w-full px-8 sm:w-1/2">
           <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
+            <span className="bg-primary mr-2 block h-3 w-full max-w-3 rounded-full"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Desktop </span>
               <span> 65% </span>
@@ -160,4 +160,4 @@ const ChartThree: React.FC = () => {
   );
 };
 
-export default ChartThree;
+export default PieChart;

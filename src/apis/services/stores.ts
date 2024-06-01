@@ -19,3 +19,15 @@ export const allStoreProducts = async (token: string) => {
     .post(`${headerUrl}/stores/all-store-products`, null, config)
     .then((res) => res.data);
 };
+
+export const storeSales = async (token: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return await axios
+    .post(`${headerUrl}/stores/sales`, null, config)
+    .then((res) => res.data);
+};

@@ -279,3 +279,10 @@ export type Collection = {
   store: Store;
   products: Product[];
 };
+
+export type Sale = {
+  orderAt: string;
+  orderDate: string;
+  totalOrders: number;
+  totalRevenue: number;
+};
