@@ -14,6 +14,7 @@ import { AlertState, Auction } from "@/enum/defined-type";
 import Link from "next/link";
 import { RootState } from "@/redux/store";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
+import { calculateRemainingDays } from "@/enum/functions";
 
 type Props = {
   auctionId: string;
@@ -78,7 +79,7 @@ const DetailAuctionsScreen = ({ auctionId }: Props) => {
                 handleRefetch={handleRefetch}
               />
             )}
-            {auction && (
+            {auction && calculateRemainingDays(auction?.closedDate) > 0 && (
               <SellerAuctionInformation
                 auction={auction}
                 handleRefetch={handleRefetch}

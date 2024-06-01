@@ -159,6 +159,28 @@ const DetailOrderModal = ({ type, orderId }: DetailOrderModalProps) => {
             </div>
           </>
         );
+      case EnumOrderStatus.DELIVERED:
+        return (
+          <>
+            <div>
+              Ngày đặt hàng:{" "}
+              <span className="font-semibold">
+                {order?.orderAt && formatCommonTime(order?.orderAt)}
+              </span>
+            </div>
+            <div>
+              Xác nhận vận chuyển lúc:{" "}
+              <span className="font-semibold">
+                {order?.deliveredAt && formatCommonTime(order?.deliveredAt)}
+              </span>
+            </div>
+            <div className="flex flex-row items-center gap-1">
+              Trạng thái:{" "}
+              {order?.status &&
+                renderStatusLabel(order?.status as EnumOrderStatus)}
+            </div>
+          </>
+        );
     }
   };
 
@@ -181,15 +203,34 @@ const DetailOrderModal = ({ type, orderId }: DetailOrderModalProps) => {
                     renderWhoCanceled(order?.updatedBy?.role)}
                 </span>
               </div>
-              <div>
-                Tiền hoàn lại:{" "}
-                <span className="font-semibold text-primary-c900">
-                  {order?.totalPayment && formatCurrency(order?.totalPayment)}
-                </span>
-              </div>
-              <div className="flex flex-row items-center gap-1">
-                Thanh toán: <span className="font-semibold">Đã hoàn trả</span>
-              </div>
+              <>
+                {!order?.isPaid && (
+                  <div>
+                    Tổng tiền:{" "}
+                    <span className="font-semibold text-primary-c900">
+                      {order?.totalPayment &&
+                        formatCurrency(order?.totalPayment)}
+                    </span>
+                  </div>
+                )}
+              </>
+              <>
+                {order?.isPaid && (
+                  <>
+                    <div>
+                      Tiền hoàn lại:{" "}
+                      <span className="font-semibold text-primary-c900">
+                        {order?.totalPayment &&
+                          formatCurrency(order?.totalPayment)}
+                      </span>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      Hoàn tiền:{" "}
+                      <span className="font-semibold">Đã hoàn trả</span>
+                    </div>
+                  </>
+                )}
+              </>
             </>
           ) : (
             <>

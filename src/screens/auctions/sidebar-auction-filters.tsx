@@ -96,8 +96,8 @@ const SidebarAuctionFilters = ({
             </MyLabel>
           )}
           <MySwitchButton
-            checked={isOpen}
-            handleClickSwitchButton={() => setIsOpen(!isOpen)}
+            checked={true}
+            handleClickSwitchButton={() => setIsOpen(true)}
           />
         </div>
       </div>

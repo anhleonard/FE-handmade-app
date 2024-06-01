@@ -258,8 +258,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Collections --> */}
               <SidebarLinkGroup
                 activeCondition={
-                  pathname === "/collections" ||
-                  pathname.includes("collections")
+                  pathname === "/collections" || pathname.includes("collection")
                 }
               >
                 {(handleClick, open) => {
@@ -269,7 +268,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         href="#"
                         className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-3 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                           (pathname === "/collections" ||
-                            pathname.includes("collections")) &&
+                            pathname.includes("collection")) &&
                           "bg-graydark dark:bg-meta-4"
                         }`}
                         onClick={(e) => {

@@ -74,3 +74,17 @@ export const cancelOrder = async (
     .put(`${headerUrl}/orders/cancel/${orderId}`, variables, config)
     .then((res) => res.data);
 };
+
+export const filterSellerOrders = async (token: string, query: any) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const queryString = new URLSearchParams(query).toString();
+
+  return await axios
+    .get(`${headerUrl}/orders/seller-filter-orders?${queryString}`, config)
+    .then((res) => res.data);
+};

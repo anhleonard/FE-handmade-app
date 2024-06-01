@@ -1,4 +1,8 @@
-import { singleProduct, updateProductBySeller } from "@/apis/services/product";
+import {
+  singleProduct,
+  updateProductBySeller,
+  updateProductVariants,
+} from "@/apis/services/product";
 import ClassifiedTable from "@/components/products/classified-table";
 import { AlertStatus, ProductStatus } from "@/enum/constants";
 import { AlertState, Product, Variant } from "@/enum/defined-type";
@@ -27,34 +31,6 @@ import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { RootState } from "@/redux/store";
 import { openSecondModal } from "@/redux/slices/secondModalSlice";
 
-const validationSchema = yup.object({
-  productName: yup.string().required("Vui lòng không để trống trường này."),
-  price: yup
-    .number()
-    .min(1, "Vui lòng nhập số lượng lớn hơn 1")
-    .required("Vui lòng không để trống trường này."),
-  inventoryNumber: yup
-    .number()
-    .min(1, "Vui lòng nhập số lượng lớn hơn 1")
-    .required("Vui lòng không để trống trường này."),
-  // price: yup.number().when("isMultipleClasses", ([isMultipleClasses], sch) => {
-  //   return isMultipleClasses === false
-  //     ? sch
-  //         .min(1, "Số lượng phải lớn hơn 0")
-  //         .required("Vui lòng không để trống trường này.")
-  //     : sch.notRequired();
-  // }),
-  // inventoryNumber: yup
-  //   .number()
-  //   .when("isMultipleClasses", ([isMultipleClasses], sch) => {
-  //     return isMultipleClasses === false
-  //       ? sch
-  //           .min(1, "Số lượng phải lớn hơn 0")
-  //           .required("Vui lòng không để trống trường này.")
-  //       : sch.notRequired();
-  //   }),
-});
-
 type Props = {
   productId: number;
 };
@@ -63,7 +39,6 @@ const EditProductModal = ({ productId }: Props) => {
   const refetchQueries = useSelector((state: RootState) => state.refetch.time);
   const dispatch = useDispatch();
   const [isChecked, setIsChecked] = useState<boolean>(true);
-  const [modalContent, setModalContent] = useState<any>(null);
 
   const [product, setProduct] = useState<Product>();
 
@@ -78,7 +53,10 @@ const EditProductModal = ({ productId }: Props) => {
   const getSingleProduct = async () => {
     try {
       dispatch(openLoading());
-      const res = await singleProduct(productId);
+      const res: Product = await singleProduct(productId);
+      if (res?.status === ProductStatus.OFF) {
+        setIsChecked(false);
+      }
       setProduct(res);
     } catch (error: any) {
       let alert: AlertState = {
@@ -96,8 +74,6 @@ const EditProductModal = ({ productId }: Props) => {
   useEffect(() => {
     getSingleProduct();
   }, [refetchQueries]);
-
-  console.log(product);
 
   const onSubmit = async (values: any) => {
     try {
@@ -120,6 +96,11 @@ const EditProductModal = ({ productId }: Props) => {
       const token = storage.getLocalAccessToken();
       const res = await updateProductBySeller(productId, variables, token);
       if (res) {
+        if (product?.isMultipleClasses) {
+          //update product sau khi update variant
+          await updateProductVariants(product?.id, token);
+        }
+
         dispatch(closeModal());
         let alert: AlertState = {
           isOpen: true,
@@ -156,7 +137,6 @@ const EditProductModal = ({ productId }: Props) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
       onSubmit={onSubmit}
       enableReinitialize
     >
@@ -192,7 +172,6 @@ const EditProductModal = ({ productId }: Props) => {
               />
             </div>
             {product?.isMultipleClasses ? (
-              // <ClassifiedTable />
               <div className="flex flex-row items-center gap-4">
                 {product?.variants?.map((variant: Variant, index: number) => {
                   return (
@@ -218,7 +197,6 @@ const EditProductModal = ({ productId }: Props) => {
                 })}
               </div>
             ) : (
-              // <BuildClassificationsModal />
               <div className="mb-4 flex flex-row items-start justify-between gap-8">
                 <MyTextField
                   id="inventoryNumber"

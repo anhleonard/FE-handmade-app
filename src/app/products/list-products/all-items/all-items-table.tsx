@@ -3,49 +3,25 @@ import {
   AlertStatus,
   Page,
   ProductStatus,
-  mainCategories,
   rowsPerPage,
 } from "@/enum/constants";
-import {
-  DeleteIcon,
-  DetailIcon,
-  EditIcon,
-  OffIcon,
-  SearchIcon,
-} from "@/enum/icons";
+import { DetailIcon, SearchIcon } from "@/enum/icons";
 import MyTextField from "@/libs/text-field";
 import MySelect, { Item } from "@/libs/select";
-import Image from "next/image";
 import { FontFamily, FontSize, SCREEN } from "@/enum/setting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "@/redux/slices/modalSlice";
-import {
-  Box,
-  Collapse,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
-} from "@mui/material";
-import EditProductModal from "../../modals/edit-product-modal";
+import { Tooltip } from "@mui/material";
 import DetailProductModal from "../../modals/detail-product-modal";
-import { openConfirm } from "@/redux/slices/confirmSlice";
 import { useEffect, useState } from "react";
-import GiftCollapse from "@/components/gifts/gift-collapse";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
 import storage from "@/apis/storage";
-import {
-  filterSellerProducts,
-  getSellerProducts,
-} from "@/apis/services/product";
+import { filterSellerProducts } from "@/apis/services/product";
 import { AlertState, Product } from "@/enum/defined-type";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { RootState } from "@/redux/store";
 import { headerUrl } from "@/apis/services/authentication";
 import { formatCurrency } from "@/enum/functions";
-import MyLabel from "@/libs/label";
 import MyStatus from "@/libs/status";
 import { MyPagination } from "@/libs/pagination";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
@@ -136,6 +112,7 @@ const AllItemsTable = () => {
           <form
             className="flex-1 text-slate-900 dark:text-slate-100"
             onSubmit={(e) => {
+              setPage(1);
               handleRefetch();
               e.preventDefault();
             }}

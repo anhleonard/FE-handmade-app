@@ -117,40 +117,42 @@ const SellingItemsTable = () => {
       title: "TẮT SẢN PHẨM",
       message: "Bạn có chắc chắn tắt sản phẩm này không?",
       feature: "CONFIRM_CONTACT_US",
-      onConfirm: async () => {
-        try {
-          dispatch(openLoading());
-          const token = storage.getLocalAccessToken();
-          const variables = {
-            status: ProductStatus?.OFF,
-          };
-          const res = await updateProductBySeller(id, variables, token);
-          if (res) {
-            dispatch(closeConfirm());
-            let alert: AlertState = {
-              isOpen: true,
-              title: "THÀNH CÔNG",
-              message: "Sản phẩm đã được tắt",
-              type: AlertStatus.SUCCESS,
-            };
-            dispatch(openAlert(alert));
-            dispatch(refetchComponent());
-          }
-        } catch (error: any) {
-          let alert: AlertState = {
-            isOpen: true,
-            title: "LỖI",
-            message: error?.response?.data?.message,
-            type: AlertStatus.ERROR,
-          };
-          dispatch(openAlert(alert));
-        } finally {
-          dispatch(closeLoading());
-        }
-      },
+      onConfirm: () => handleOffItem(id),
     };
 
     dispatch(openConfirm(confirm));
+  };
+
+  const handleOffItem = async (productId: number) => {
+    try {
+      dispatch(openLoading());
+      const token = storage.getLocalAccessToken();
+      const variables = {
+        status: ProductStatus?.OFF,
+      };
+      const res = await updateProductBySeller(productId, variables, token);
+      if (res) {
+        dispatch(closeConfirm());
+        let alert: AlertState = {
+          isOpen: true,
+          title: "THÀNH CÔNG",
+          message: "Sản phẩm đã được tắt",
+          type: AlertStatus.SUCCESS,
+        };
+        dispatch(openAlert(alert));
+        dispatch(refetchComponent());
+      }
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    } finally {
+      dispatch(closeLoading());
+    }
   };
 
   useEffect(() => {
@@ -182,6 +184,7 @@ const SellingItemsTable = () => {
           <form
             className="flex-1 text-slate-900 dark:text-slate-100"
             onSubmit={(e) => {
+              setPage(1);
               handleRefetch();
               e.preventDefault();
             }}
@@ -274,11 +277,6 @@ const SellingItemsTable = () => {
                             onClick={() => handleOpenEditModal(product?.id)}
                           >
                             <EditIcon />
-                          </div>
-                        </Tooltip>
-                        <Tooltip title="Xóa">
-                          <div className="hover:cursor-pointer">
-                            <DeleteIcon />
                           </div>
                         </Tooltip>
                         <Tooltip title="Tắt sản phẩm">

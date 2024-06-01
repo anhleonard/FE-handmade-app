@@ -7,7 +7,7 @@ import { uploadImages, uploadSingleImage } from "@/apis/services/uploads";
 import { updateSimpleVariant, updateVariant } from "@/apis/services/variants";
 import storage from "@/apis/storage";
 import MyEditMultipleChoices from "@/components/variants/edit-multiple-choices";
-import { AlertStatus, yesNoOptions } from "@/enum/constants";
+import { AlertStatus, ProductStatus, yesNoOptions } from "@/enum/constants";
 import { AlertState, Product, UpdateVariant } from "@/enum/defined-type";
 import Button from "@/libs/button";
 import FormatEndCurrencyIcon from "@/libs/format-end-currency-icon";
@@ -29,9 +29,14 @@ import { useDispatch } from "react-redux";
 type Props = {
   product: Product;
   handleRefetch: () => void;
+  updateTextButton?: string;
 };
 
-const EditTotalProductModal = ({ product, handleRefetch }: Props) => {
+const EditTotalProductModal = ({
+  product,
+  handleRefetch,
+  updateTextButton = "Cập nhật",
+}: Props) => {
   const dispatch = useDispatch();
   const [isClassified, setIsClassified] = useState<boolean>(
     product?.isMultipleClasses,
@@ -204,6 +209,9 @@ const EditTotalProductModal = ({ product, handleRefetch }: Props) => {
           ...(newUrls?.length && {
             images: newUrls,
           }),
+          ...(product?.status === ProductStatus.VIOLATE && {
+            status: ProductStatus.PENDING,
+          }),
         };
 
         const res = await updateProductBySeller(product.id, params, token);
@@ -374,9 +382,9 @@ const EditTotalProductModal = ({ product, handleRefetch }: Props) => {
                 <Button
                   color="primary"
                   type="submit"
-                  className="h-12 w-1/3 text-xs md:text-sm lg:text-base"
+                  className="h-12 w-1/3 !min-w-[200px] text-xs md:text-sm lg:text-base"
                 >
-                  Cập nhật
+                  {updateTextButton}
                 </Button>
               </div>
             </div>

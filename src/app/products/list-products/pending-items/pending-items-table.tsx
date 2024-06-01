@@ -23,11 +23,7 @@ import { Tooltip } from "@mui/material";
 import DetailProductModal from "../../modals/detail-product-modal";
 import { closeConfirm, openConfirm } from "@/redux/slices/confirmSlice";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
-import {
-  deleteProduct,
-  filterSellerProducts,
-  getPendingProducts,
-} from "@/apis/services/product";
+import { deleteProduct, filterSellerProducts } from "@/apis/services/product";
 import storage from "@/apis/storage";
 import { AlertState, Category, Product } from "@/enum/defined-type";
 import { openAlert } from "@/redux/slices/alertSlice";
@@ -73,44 +69,42 @@ const PendingItemsTable = () => {
   const handleConfirmDeleteItem = (id: number) => {
     const confirm: any = {
       isOpen: true,
-      title: "HỦY CHỜ DUYỆT SẢN PHẨM",
-      message: "Bạn có chắc chắn hủy chờ duyệt cho sản phẩm này không?",
+      title: "XÓA SẢN PHẨM",
+      message: "Bạn có chắc chắn xóa cho sản phẩm này không?",
       feature: "CONFIRM_CONTACT_US",
-      onConfirm: async () => {
-        try {
-          dispatch(openLoading());
-          const res = await handleDeleteProduct(id); //call api to delete product
-          if (res) {
-            dispatch(closeConfirm());
-            let alert: AlertState = {
-              isOpen: true,
-              title: "XÓA THÀNH CÔNG",
-              message: "Đã xóa sản phẩm khỏi danh sách chờ duyệt thành công",
-              type: AlertStatus.SUCCESS,
-            };
-            dispatch(openAlert(alert));
-            dispatch(refetchComponent());
-          }
-        } catch (error: any) {
-          let alert: AlertState = {
-            isOpen: true,
-            title: "LỖI",
-            message: error?.response?.data?.message,
-            type: AlertStatus.ERROR,
-          };
-          dispatch(openAlert(alert));
-        } finally {
-          dispatch(closeLoading());
-        }
-      },
+      onConfirm: async () => handleDeleteProduct(id),
     };
 
     dispatch(openConfirm(confirm));
   };
 
   const handleDeleteProduct = async (id: number) => {
-    const token = storage.getLocalAccessToken();
-    return await deleteProduct(id, token);
+    try {
+      dispatch(openLoading());
+      const token = storage.getLocalAccessToken();
+      const res = await deleteProduct(id, token);
+      if (res) {
+        dispatch(closeConfirm());
+        let alert: AlertState = {
+          isOpen: true,
+          title: "XÓA THÀNH CÔNG",
+          message: "Đã xóa sản phẩm khỏi danh sách chờ duyệt thành công",
+          type: AlertStatus.SUCCESS,
+        };
+        dispatch(openAlert(alert));
+        dispatch(refetchComponent());
+      }
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    } finally {
+      dispatch(closeLoading());
+    }
   };
 
   // get all seller products by seller token
@@ -190,6 +184,7 @@ const PendingItemsTable = () => {
           <form
             className="flex-1 text-slate-900 dark:text-slate-100"
             onSubmit={(e) => {
+              setPage(1);
               handleRefetch();
               e.preventDefault();
             }}
@@ -227,8 +222,8 @@ const PendingItemsTable = () => {
               {pendingProducts?.map((product: Product, index: number) => {
                 return (
                   <tr
-                    className="hover:bg-primary-c100 hover:text-grey-c700"
                     key={index}
+                    className="hover:bg-primary-c100 hover:text-grey-c700"
                   >
                     <td className="py-4 pl-3">{product.productCode}</td>
                     <td className="px-1 py-4">

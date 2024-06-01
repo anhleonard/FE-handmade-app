@@ -15,13 +15,12 @@ import { openModal } from "@/redux/slices/modalSlice";
 import { Tooltip } from "@mui/material";
 import { COLORS } from "@/enum/colors";
 import DetailProductModal from "../../modals/detail-product-modal";
-import EditViolateProductModal from "../../modals/edit-violate-product";
-import { openConfirm } from "@/redux/slices/confirmSlice";
+import { closeConfirm, openConfirm } from "@/redux/slices/confirmSlice";
 import { useEffect, useState } from "react";
 import { AlertState, Product } from "@/enum/defined-type";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
 import storage from "@/apis/storage";
-import { filterSellerProducts } from "@/apis/services/product";
+import { deleteProduct, filterSellerProducts } from "@/apis/services/product";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { headerUrl } from "@/apis/services/authentication";
 import { formatDate } from "@/enum/functions";
@@ -29,6 +28,7 @@ import { MyPagination } from "@/libs/pagination";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { RootState } from "@/redux/store";
 import MyLabel from "@/libs/label";
+import EditTotalProductModal from "../../modals/edit-total-product-modal";
 
 const labelOptions = [
   { label: "Tên sản phẩm", value: "ITEM_NAME" },
@@ -58,28 +58,6 @@ const ViolateItemsTable = () => {
       screen: SCREEN.BASE,
     };
     dispatch(openModal(modal));
-  };
-
-  const handleOpenEditModal = () => {
-    const modal = {
-      isOpen: true,
-      title: "Chỉnh sửa sản phẩm & lỗi",
-      content: <EditViolateProductModal />,
-      screen: SCREEN.BASE,
-    };
-    dispatch(openModal(modal));
-  };
-
-  const handleConfirmDeleteItem = () => {
-    const confirm: any = {
-      isOpen: true,
-      title: "XÓA SẢN PHẨM",
-      message: "Bạn có chắc chắn xóa sản phẩm này không?",
-      feature: "CONFIRM_CONTACT_US",
-      onConfirm: () => {},
-    };
-
-    dispatch(openConfirm(confirm));
   };
 
   // get all seller products by seller token
@@ -131,6 +109,63 @@ const ViolateItemsTable = () => {
     dispatch(refetchComponent());
   };
 
+  const handleOpenEditModal = async (product: Product) => {
+    const modal = {
+      isOpen: true,
+      title: "Chỉnh sửa sản phẩm",
+      content: (
+        <EditTotalProductModal
+          product={product}
+          handleRefetch={handleRefetch}
+          updateTextButton="Gửi duyệt lại"
+        />
+      ),
+      screen: SCREEN.LG,
+    };
+    dispatch(openModal(modal));
+  };
+
+  const handleConfirmDeleteItem = (id: number) => {
+    const confirm: any = {
+      isOpen: true,
+      title: "XÓA SẢN PHẨM",
+      message: "Bạn có chắc chắn xóa cho sản phẩm này không?",
+      feature: "CONFIRM_CONTACT_US",
+      onConfirm: async () => handleDeleteProduct(id),
+    };
+
+    dispatch(openConfirm(confirm));
+  };
+
+  const handleDeleteProduct = async (id: number) => {
+    try {
+      dispatch(openLoading());
+      const token = storage.getLocalAccessToken();
+      const res = await deleteProduct(id, token);
+      if (res) {
+        dispatch(closeConfirm());
+        let alert: AlertState = {
+          isOpen: true,
+          title: "XÓA THÀNH CÔNG",
+          message: "Đã xóa sản phẩm thành công",
+          type: AlertStatus.SUCCESS,
+        };
+        dispatch(openAlert(alert));
+        dispatch(refetchComponent());
+      }
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    } finally {
+      dispatch(closeLoading());
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8">
       {/* filter */}
@@ -144,6 +179,7 @@ const ViolateItemsTable = () => {
           <form
             className="flex-1 text-slate-900 dark:text-slate-100"
             onSubmit={(e) => {
+              setPage(1);
               handleRefetch();
               e.preventDefault();
             }}
@@ -179,7 +215,10 @@ const ViolateItemsTable = () => {
             <tbody>
               {violateProducts?.map((product: Product, index: number) => {
                 return (
-                  <tr className="hover:bg-primary-c100 hover:text-grey-c700">
+                  <tr
+                    key={index}
+                    className="hover:bg-primary-c100 hover:text-grey-c700"
+                  >
                     <td className="py-4 pl-3">{product?.productCode}</td>
                     <td className="px-1 py-4">
                       <div className="flex flex-row items-start gap-2">
@@ -228,7 +267,7 @@ const ViolateItemsTable = () => {
                         <Tooltip title="Chỉnh sửa">
                           <div
                             className="hover:cursor-pointer"
-                            onClick={() => handleOpenEditModal()}
+                            onClick={() => handleOpenEditModal(product)}
                           >
                             <EditIcon />
                           </div>
@@ -236,7 +275,7 @@ const ViolateItemsTable = () => {
                         <Tooltip title="Xóa">
                           <div
                             className="hover:cursor-pointer"
-                            onClick={() => handleConfirmDeleteItem()}
+                            onClick={() => handleConfirmDeleteItem(product?.id)}
                           >
                             <DeleteIcon />
                           </div>

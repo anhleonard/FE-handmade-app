@@ -111,17 +111,21 @@ const CollectionsPage = () => {
             Danh sách bộ sưu tập
           </div>
 
-          <MyTextField
-            id="searchItem"
-            endIcon={
-              <div onClick={() => handleRefetch()}>
-                <SearchIcon />
-              </div>
-            }
-            placeholder="Nhập nội dung tìm kiếm"
-            className="w-[300px]"
-            onChange={(e) => setTitle(e.target.value)}
-          />
+          <form
+            className="flex-1 text-slate-900 dark:text-slate-100"
+            onSubmit={(e) => {
+              handleRefetch();
+              e.preventDefault();
+            }}
+          >
+            <MyTextField
+              id="searchItem"
+              endIcon={<SearchIcon />}
+              placeholder="Nhập nội dung tìm kiếm"
+              className="w-[300px]"
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </form>
         </div>
 
         <div className="max-w-[100%] overflow-hidden rounded-[10px]">
@@ -131,7 +135,8 @@ const CollectionsPage = () => {
                 className={`bg-primary-c200 uppercase text-grey-c700 ${FontFamily.BOLD} ${FontSize.BASE}`}
               >
                 <tr className="hover:bg-secondary-c100 hover:text-grey-c700">
-                  <th className="py-4 pl-3">Tên bộ sưu tập</th>
+                  <th className="py-4 pl-3">Số thứ tự</th>
+                  <th className="px-1 py-4">Tên bộ sưu tập</th>
                   <th className="px-1 py-4">Số sản phẩm</th>
                   <th className="px-1 py-4 text-center">Thao tác</th>
                 </tr>
@@ -144,7 +149,8 @@ const CollectionsPage = () => {
                       key={index}
                       className="hover:bg-primary-c100 hover:text-grey-c700"
                     >
-                      <td className="py-4 pl-3">{collect?.name}</td>
+                      <td className="py-4 pl-3">{index + 1}</td>
+                      <td className="px-1 py-4">{collect?.name}</td>
                       <td className="px-1 py-4">{collect?.products?.length}</td>
                       <td className="px-1 py-4">
                         <div className="flex flex-row items-center justify-center gap-2">

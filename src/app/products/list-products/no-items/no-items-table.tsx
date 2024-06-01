@@ -25,7 +25,10 @@ import { AlertState, Product } from "@/enum/defined-type";
 import { RootState } from "@/redux/store";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
 import storage from "@/apis/storage";
-import { filterSellerProducts } from "@/apis/services/product";
+import {
+  filterSellerProducts,
+  updateProductBySeller,
+} from "@/apis/services/product";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { MyPagination } from "@/libs/pagination";
@@ -33,6 +36,9 @@ import { headerUrl } from "@/apis/services/authentication";
 import MyLabel from "@/libs/label";
 import { formatCurrency } from "@/enum/functions";
 import MyStatus from "@/libs/status";
+import DetailProductModal from "../../modals/detail-product-modal";
+import EditProductModal from "../../modals/edit-product-modal";
+import { closeConfirm, openConfirm } from "@/redux/slices/confirmSlice";
 
 const labelOptions = [
   { label: "Tên sản phẩm", value: "ITEM_NAME" },
@@ -49,17 +55,7 @@ const NoItemsTable = () => {
   const [selectedOption, setSelectedOption] = useState<Item>(labelOptions[0]);
   const [searchText, setSearchText] = useState<string>("");
 
-  const handleOpenModal = () => {
-    const modal = {
-      isOpen: true,
-      title: "Ticket detail",
-      content: <div>hello cac ban</div>,
-      screen: SCREEN.XS,
-    };
-    dispatch(openModal(modal));
-  };
-
-  // get all seller products by seller token
+  // get all products đang bán mà hết hàng
   const getAllSellerProducts = async () => {
     try {
       dispatch(openLoading());
@@ -109,6 +105,75 @@ const NoItemsTable = () => {
     dispatch(refetchComponent());
   };
 
+  const handleOpenDetailModal = (productId: number) => {
+    const modal = {
+      isOpen: true,
+      title: "Chi tiết sản phẩm",
+      content: (
+        <DetailProductModal
+          type={ProductStatus.NO_ITEM}
+          productId={productId}
+        />
+      ),
+      screen: SCREEN.BASE,
+    };
+    dispatch(openModal(modal));
+  };
+
+  const handleOpenEditModal = (productId: number) => {
+    const modal = {
+      isOpen: true,
+      title: "Chỉnh sửa sản phẩm",
+      content: <EditProductModal productId={productId} />,
+      screen: SCREEN.BASE,
+    };
+    dispatch(openModal(modal));
+  };
+
+  const handleConfirmOffItem = (id: number) => {
+    const confirm: any = {
+      isOpen: true,
+      title: "TẮT SẢN PHẨM",
+      message: "Bạn có chắc chắn tắt sản phẩm này không?",
+      feature: "CONFIRM_CONTACT_US",
+      onConfirm: () => handleOffItem(id),
+    };
+
+    dispatch(openConfirm(confirm));
+  };
+
+  const handleOffItem = async (productId: number) => {
+    try {
+      dispatch(openLoading());
+      const token = storage.getLocalAccessToken();
+      const variables = {
+        status: ProductStatus?.OFF,
+      };
+      const res = await updateProductBySeller(productId, variables, token);
+      if (res) {
+        dispatch(closeConfirm());
+        let alert: AlertState = {
+          isOpen: true,
+          title: "THÀNH CÔNG",
+          message: "Sản phẩm đã được tắt",
+          type: AlertStatus.SUCCESS,
+        };
+        dispatch(openAlert(alert));
+        dispatch(refetchComponent());
+      }
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    } finally {
+      dispatch(closeLoading());
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8">
       {/* filter */}
@@ -122,6 +187,7 @@ const NoItemsTable = () => {
           <form
             className="flex-1 text-slate-900 dark:text-slate-100"
             onSubmit={(e) => {
+              setPage(1);
               handleRefetch();
               e.preventDefault();
             }}
@@ -201,23 +267,24 @@ const NoItemsTable = () => {
                         <Tooltip title="Xem chi tiết">
                           <div
                             className="hover:cursor-pointer"
-                            onClick={() => handleOpenModal()}
+                            onClick={() => handleOpenDetailModal(product?.id)}
                           >
                             <DetailIcon />
                           </div>
                         </Tooltip>
                         <Tooltip title="Chỉnh sửa">
-                          <div className="hover:cursor-pointer">
+                          <div
+                            className="hover:cursor-pointer"
+                            onClick={() => handleOpenEditModal(product?.id)}
+                          >
                             <EditIcon />
                           </div>
                         </Tooltip>
-                        <Tooltip title="Xóa">
-                          <div className="hover:cursor-pointer">
-                            <DeleteIcon />
-                          </div>
-                        </Tooltip>
                         <Tooltip title="Tắt sản phẩm">
-                          <div className="hover:cursor-pointer">
+                          <div
+                            className="hover:cursor-pointer"
+                            onClick={() => handleConfirmOffItem(product?.id)}
+                          >
                             <OffIcon />
                           </div>
                         </Tooltip>

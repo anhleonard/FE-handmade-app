@@ -22,70 +22,10 @@ export const filterSellerProducts = async (token: string, query: any) => {
 
   const queryString = new URLSearchParams(query).toString();
 
+  console.log(`${headerUrl}/products/filter-seller-products?${queryString}`);
+
   return await axios
     .get(`${headerUrl}/products/filter-seller-products?${queryString}`, config)
-    .then((res) => res.data);
-};
-
-export const getSellerProducts = async (token: string, query: any) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const queryString = new URLSearchParams(query).toString();
-
-  return await axios
-    .post(`${headerUrl}/products/seller-products?${queryString}`, null, config)
-    .then((res) => res.data);
-};
-
-export const getPendingProducts = async (token: string) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  return await axios
-    .post(`${headerUrl}/products/pending-products`, null, config)
-    .then((res) => res.data);
-};
-
-export const getSellingProducts = async (token: string) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  return await axios
-    .post(`${headerUrl}/products/selling-products`, null, config)
-    .then((res) => res.data);
-};
-
-export const getViolateProducts = async (token: string) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  return await axios
-    .post(`${headerUrl}/products/violate-products`, null, config)
-    .then((res) => res.data);
-};
-
-export const getOffProducts = async (token: string) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  return await axios
-    .post(`${headerUrl}/products/off-products`, null, config)
     .then((res) => res.data);
 };
 

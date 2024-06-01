@@ -251,12 +251,16 @@ const MySelect = forwardRef<HTMLDivElement, Props>(function Select(
 
   return (
     <div className={`relative ${wrapClassName}`}>
-      <div className="mb-1 block text-sm font-medium text-grey-c600 dark:text-white">
-        {title}
-        {isRequired ? (
-          <span className="text-base text-support-c500"> *</span>
-        ) : null}
-      </div>
+      <>
+        {title && (
+          <div className="mb-1 block text-sm font-medium text-grey-c600 dark:text-white">
+            {title}
+            {isRequired ? (
+              <span className="text-base text-support-c500"> *</span>
+            ) : null}
+          </div>
+        )}
+      </>
       <div
         id={id}
         ref={ref}

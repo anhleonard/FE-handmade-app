@@ -6,7 +6,7 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import React, { useEffect, useState } from "react";
 import SidebarAuctionFilters from "./sidebar-auction-filters";
 
-import { AlertStatus } from "@/enum/constants";
+import { AlertStatus, AuctionStatus } from "@/enum/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
@@ -14,6 +14,7 @@ import { RootState } from "@/redux/store";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { AlertState, Auction, FilterTime } from "@/enum/defined-type";
 import { filterAuctions } from "@/apis/services/auctions";
+import { calculateRemainingDays } from "@/enum/functions";
 
 const ListAuctionsScreen = () => {
   const dispatch = useDispatch();
@@ -81,16 +82,20 @@ const ListAuctionsScreen = () => {
         </div>
         <div className="grid grid-cols-2 gap-6 md:grid-cols-5">
           <div className="md:col-span-4">
-            <MyTextField
-              id="auction-search-field"
-              placeholder="Nhập keyword mà bạn muốn tìm kiếm"
-              onChange={(event) => setTitle(event.target.value)}
-              endIcon={
-                <div onClick={() => getAllFilterAuctions()}>
-                  <SearchRoundedIcon sx={{ color: COLORS.grey.c400 }} />
-                </div>
-              }
-            />
+            <form
+              className="flex-1 text-slate-900 dark:text-slate-100"
+              onSubmit={(e) => {
+                getAllFilterAuctions();
+                e.preventDefault();
+              }}
+            >
+              <MyTextField
+                id="auction-search-field"
+                placeholder="Nhập keyword mà bạn muốn tìm kiếm"
+                onChange={(event) => setTitle(event.target.value)}
+                endIcon={<SearchRoundedIcon sx={{ color: COLORS.grey.c400 }} />}
+              />
+            </form>
           </div>
           <Button color="info">Dự án của tôi</Button>
         </div>
@@ -110,6 +115,7 @@ const ListAuctionsScreen = () => {
           <div className="mb-10 flex-shrink-0 border-t lg:mx-4 lg:mb-0 lg:border-t-0"></div>
           <div className="flex-1 space-y-8">
             {auctions?.map((auction, index) => {
+              if (calculateRemainingDays(auction?.closedDate) <= 0) return null;
               return <AunctionCard key={index} auction={auction} />;
             })}
           </div>

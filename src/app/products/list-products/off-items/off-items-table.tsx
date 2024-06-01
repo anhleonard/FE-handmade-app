@@ -24,7 +24,6 @@ import storage from "@/apis/storage";
 import {
   deleteProduct,
   filterSellerProducts,
-  getOffProducts,
   updateProductBySeller,
 } from "@/apis/services/product";
 import { useEffect, useState } from "react";
@@ -38,6 +37,7 @@ import { closeConfirm, openConfirm } from "@/redux/slices/confirmSlice";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { MyPagination } from "@/libs/pagination";
 import MyLabel from "@/libs/label";
+import EditProductModal from "../../modals/edit-product-modal";
 
 const labelOptions = [
   { label: "Tên sản phẩm", value: "ITEM_NAME" },
@@ -113,6 +113,16 @@ const OffItemsTable = () => {
 
   const handleRefetch = () => {
     dispatch(refetchComponent());
+  };
+
+  const handleOpenEditModal = (productId: number) => {
+    const modal = {
+      isOpen: true,
+      title: "Chỉnh sửa sản phẩm",
+      content: <EditProductModal productId={productId} />,
+      screen: SCREEN.BASE,
+    };
+    dispatch(openModal(modal));
   };
 
   const handleConfirmDeleteItem = (id: number) => {
@@ -213,6 +223,7 @@ const OffItemsTable = () => {
           <form
             className="flex-1 text-slate-900 dark:text-slate-100"
             onSubmit={(e) => {
+              setPage(1);
               handleRefetch();
               e.preventDefault();
             }}
@@ -248,8 +259,8 @@ const OffItemsTable = () => {
               {offProducts?.map((product: Product, index: number) => {
                 return (
                   <tr
-                    className="hover:bg-primary-c100 hover:text-grey-c700"
                     key={index}
+                    className="hover:bg-primary-c100 hover:text-grey-c700"
                   >
                     <td className="py-4 pl-3">{product.productCode}</td>
                     <td className="px-1 py-4">
@@ -296,7 +307,10 @@ const OffItemsTable = () => {
                           </div>
                         </Tooltip>
                         <Tooltip title="Chỉnh sửa">
-                          <div className="hover:cursor-pointer">
+                          <div
+                            className="hover:cursor-pointer"
+                            onClick={() => handleOpenEditModal(product?.id)}
+                          >
                             <EditIcon />
                           </div>
                         </Tooltip>
