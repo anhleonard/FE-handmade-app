@@ -38,6 +38,7 @@ import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { RootState } from "@/redux/store";
 import EditTotalProductModal from "../../modals/edit-total-product-modal";
 import { MyPagination } from "@/libs/pagination";
+import MyLabel from "@/libs/label";
 
 const labelOptions = [
   { label: "Tên sản phẩm", value: "ITEM_NAME" },
@@ -213,6 +214,7 @@ const PendingItemsTable = () => {
               <tr className="hover:bg-secondary-c100 hover:text-grey-c700">
                 <th className="py-4 pl-3">Mã sản phẩm</th>
                 <th className="px-1 py-4">Sản phẩm</th>
+                <th className="px-1 py-4">Trạng thái</th>
                 <th className="px-1 py-4">Danh mục</th>
                 <th className="px-1 py-4">Tồn kho</th>
                 <th className="px-1 py-4">Giá bán</th>
@@ -242,6 +244,9 @@ const PendingItemsTable = () => {
                           </div>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-1 py-4">
+                      <MyLabel type="warning">Chờ duyệt</MyLabel>
                     </td>
                     <td className="px-1 py-4">
                       <div className="flex flex-col items-start justify-start gap-1">

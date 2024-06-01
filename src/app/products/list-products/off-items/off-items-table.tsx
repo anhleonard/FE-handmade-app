@@ -1,16 +1,20 @@
 "use client";
-import { AlertStatus, ProductStatus, mainCategories } from "@/enum/constants";
+import {
+  AlertStatus,
+  Page,
+  ProductStatus,
+  mainCategories,
+  rowsPerPage,
+} from "@/enum/constants";
 import {
   DeleteIcon,
   DetailIcon,
   EditIcon,
-  OffIcon,
   SearchIcon,
   TurnOnIcon,
 } from "@/enum/icons";
 import MyTextField from "@/libs/text-field";
-import MySelect from "@/libs/select";
-import Image from "next/image";
+import MySelect, { Item } from "@/libs/select";
 import { FontFamily, FontSize, SCREEN } from "@/enum/setting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "@/redux/slices/modalSlice";
@@ -19,6 +23,7 @@ import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
 import storage from "@/apis/storage";
 import {
   deleteProduct,
+  filterSellerProducts,
   getOffProducts,
   updateProductBySeller,
 } from "@/apis/services/product";
@@ -31,6 +36,8 @@ import { formatCurrency } from "@/enum/functions";
 import DetailProductModal from "../../modals/detail-product-modal";
 import { closeConfirm, openConfirm } from "@/redux/slices/confirmSlice";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
+import { MyPagination } from "@/libs/pagination";
+import MyLabel from "@/libs/label";
 
 const labelOptions = [
   { label: "Tên sản phẩm", value: "ITEM_NAME" },
@@ -39,8 +46,13 @@ const labelOptions = [
 
 const OffItemsTable = () => {
   const dispatch = useDispatch();
-  const refetchQueries = useSelector((state: RootState) => state.refetch.time);
   const [offProducts, setOffProducts] = useState<Product[]>([]);
+  const [page, setPage] = useState(Page);
+  const [rowsPage, setRowsPage] = useState(rowsPerPage);
+  const [count, setCount] = useState(0);
+  const refetchQueries = useSelector((state: RootState) => state.refetch.time);
+  const [selectedOption, setSelectedOption] = useState<Item>(labelOptions[0]);
+  const [searchText, setSearchText] = useState<string>("");
 
   const handleOpenDetailModal = (productId: number) => {
     const modal = {
@@ -54,13 +66,26 @@ const OffItemsTable = () => {
     dispatch(openModal(modal));
   };
 
-  // get all off products by seller token
-  const getAllOffProducts = async () => {
+  // get all seller products by seller token
+  const getAllSellerProducts = async () => {
     try {
       dispatch(openLoading());
       const token = storage.getLocalAccessToken();
-      const res = await getOffProducts(token);
-      setOffProducts(res);
+      const res = await filterSellerProducts(token, {
+        limit: rowsPage,
+        page: page,
+        status: ProductStatus.OFF,
+        ...(selectedOption === labelOptions[0] &&
+          searchText !== "" && {
+            productName: searchText,
+          }),
+        ...(selectedOption === labelOptions[1] &&
+          searchText !== "" && {
+            productCode: searchText,
+          }),
+      });
+      setCount(res?.total ?? 0);
+      setOffProducts(res?.data);
     } catch (error: any) {
       let alert: AlertState = {
         isOpen: true,
@@ -75,8 +100,20 @@ const OffItemsTable = () => {
   };
 
   useEffect(() => {
-    getAllOffProducts();
-  }, [refetchQueries]);
+    getAllSellerProducts();
+  }, [refetchQueries, page, rowsPage]);
+
+  const handlePageChange = (page: number) => {
+    setPage(page);
+  };
+  const handleRowPerPageChange = (e: any) => {
+    setPage(Page);
+    setRowsPage(parseInt(e.target.value));
+  };
+
+  const handleRefetch = () => {
+    dispatch(refetchComponent());
+  };
 
   const handleConfirmDeleteItem = (id: number) => {
     const confirm: any = {
@@ -168,22 +205,29 @@ const OffItemsTable = () => {
       {/* filter */}
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-1">
-          <MySelect options={labelOptions} selected={labelOptions[0].value} />
-          <MyTextField
-            id="searchItem"
-            endIcon={<SearchIcon />}
-            placeholder="Nhập nội dung tìm kiếm"
-            className="w-[300px]"
-          />
-        </div>
-        <div className="flex flex-row items-center gap-3">
-          <div>Danh mục</div>
           <MySelect
-            options={mainCategories}
-            selected={mainCategories[0].value}
+            options={labelOptions}
+            selected={selectedOption.value}
+            onSelectItem={(item: Item) => setSelectedOption(item)}
           />
+          <form
+            className="flex-1 text-slate-900 dark:text-slate-100"
+            onSubmit={(e) => {
+              handleRefetch();
+              e.preventDefault();
+            }}
+          >
+            <MyTextField
+              id="searchItem"
+              endIcon={<SearchIcon />}
+              placeholder="Nhập nội dung tìm kiếm"
+              className="w-[300px]"
+              onChange={(event) => setSearchText(event.target.value)}
+            />
+          </form>
         </div>
       </div>
+
       {/* table */}
       <div className="max-w-[100%] overflow-hidden rounded-[10px]">
         <div className="overflow-x-auto">
@@ -194,10 +238,9 @@ const OffItemsTable = () => {
               <tr className="hover:bg-secondary-c100 hover:text-grey-c700">
                 <th className="py-4 pl-3">Mã sản phẩm</th>
                 <th className="px-1 py-4">Sản phẩm</th>
+                <th className="px-1 py-4">Trạng thái</th>
                 <th className="px-1 py-4">Tồn kho</th>
                 <th className="px-1 py-4">Giá bán</th>
-                <th className="px-1 py-4">Phí Handmade thu</th>
-                <th className="px-1 py-4">Lợi nhuận</th>
                 <th className="px-1 py-4 text-center">Thao tác</th>
               </tr>
             </thead>
@@ -229,28 +272,13 @@ const OffItemsTable = () => {
                         </div>
                       </div>
                     </td>
+                    <td className="px-1 py-4">
+                      <MyLabel type="grey">Đã tắt</MyLabel>
+                    </td>
                     <td className="px-1 py-4">{product?.inventoryNumber}</td>
                     <td className="px-1 py-4">
                       {product?.price ? (
                         formatCurrency(product?.price)
-                      ) : (
-                        <div className="flex flex-row items-center justify-center">
-                          -
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-1 py-4">
-                      {product?.profitMoney ? (
-                        formatCurrency(product?.profitMoney)
-                      ) : (
-                        <div className="flex flex-row items-center justify-center">
-                          -
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-1 py-4">
-                      {product?.profitMoney && product?.price ? (
-                        formatCurrency(product?.price - product?.profitMoney)
                       ) : (
                         <div className="flex flex-row items-center justify-center">
                           -
@@ -297,6 +325,13 @@ const OffItemsTable = () => {
           </table>
         </div>
       </div>
+      <MyPagination
+        page={page}
+        handlePageChange={handlePageChange}
+        handleRowPerPageChange={handleRowPerPageChange}
+        total={count}
+        rowsPerPage={rowsPage}
+      />
     </div>
   );
 };

@@ -1,36 +1,34 @@
 "use client";
-import { AlertStatus, ProductStatus, mainCategories } from "@/enum/constants";
 import {
-  DeleteIcon,
-  DetailIcon,
-  EditIcon,
-  OffIcon,
-  SearchIcon,
-} from "@/enum/icons";
+  AlertStatus,
+  Page,
+  ProductStatus,
+  rowsPerPage,
+} from "@/enum/constants";
+import { DeleteIcon, EditIcon, SearchIcon } from "@/enum/icons";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import MyTextField from "@/libs/text-field";
-import MySelect from "@/libs/select";
-import Image from "next/image";
+import MySelect, { Item } from "@/libs/select";
 import { FontFamily, FontSize, SCREEN } from "@/enum/setting";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "@/redux/slices/modalSlice";
-import { Tooltip, Typography } from "@mui/material";
-import MyTextAction from "@/libs/text-action";
-import MyCutOffText from "@/libs/cutoff-text";
+import { Tooltip } from "@mui/material";
 import { COLORS } from "@/enum/colors";
 import DetailProductModal from "../../modals/detail-product-modal";
-import EditProductModal from "../../modals/edit-product-modal";
 import EditViolateProductModal from "../../modals/edit-violate-product";
 import { openConfirm } from "@/redux/slices/confirmSlice";
 import { useEffect, useState } from "react";
 import { AlertState, Product } from "@/enum/defined-type";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
 import storage from "@/apis/storage";
-import { getViolateProducts } from "@/apis/services/product";
+import { filterSellerProducts } from "@/apis/services/product";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { headerUrl } from "@/apis/services/authentication";
 import { formatDate } from "@/enum/functions";
+import { MyPagination } from "@/libs/pagination";
+import { refetchComponent } from "@/redux/slices/refetchSlice";
+import { RootState } from "@/redux/store";
+import MyLabel from "@/libs/label";
 
 const labelOptions = [
   { label: "Tên sản phẩm", value: "ITEM_NAME" },
@@ -40,6 +38,12 @@ const labelOptions = [
 const ViolateItemsTable = () => {
   const dispatch = useDispatch();
   const [violateProducts, setViolateProducts] = useState<Product[]>([]);
+  const [page, setPage] = useState(Page);
+  const [rowsPage, setRowsPage] = useState(rowsPerPage);
+  const [count, setCount] = useState(0);
+  const refetchQueries = useSelector((state: RootState) => state.refetch.time);
+  const [selectedOption, setSelectedOption] = useState<Item>(labelOptions[0]);
+  const [searchText, setSearchText] = useState<string>("");
 
   const handleOpenDetailModal = (productId: number) => {
     const modal = {
@@ -78,13 +82,26 @@ const ViolateItemsTable = () => {
     dispatch(openConfirm(confirm));
   };
 
-  // get all violate products by seller token
-  const getAllViolateProducts = async () => {
+  // get all seller products by seller token
+  const getAllSellerProducts = async () => {
     try {
       dispatch(openLoading());
       const token = storage.getLocalAccessToken();
-      const res = await getViolateProducts(token);
-      setViolateProducts(res);
+      const res = await filterSellerProducts(token, {
+        limit: rowsPage,
+        page: page,
+        status: ProductStatus.VIOLATE,
+        ...(selectedOption === labelOptions[0] &&
+          searchText !== "" && {
+            productName: searchText,
+          }),
+        ...(selectedOption === labelOptions[1] &&
+          searchText !== "" && {
+            productCode: searchText,
+          }),
+      });
+      setCount(res?.total ?? 0);
+      setViolateProducts(res?.data);
     } catch (error: any) {
       let alert: AlertState = {
         isOpen: true,
@@ -99,30 +116,49 @@ const ViolateItemsTable = () => {
   };
 
   useEffect(() => {
-    getAllViolateProducts();
-  }, []);
+    getAllSellerProducts();
+  }, [refetchQueries, page, rowsPage]);
+
+  const handlePageChange = (page: number) => {
+    setPage(page);
+  };
+  const handleRowPerPageChange = (e: any) => {
+    setPage(Page);
+    setRowsPage(parseInt(e.target.value));
+  };
+
+  const handleRefetch = () => {
+    dispatch(refetchComponent());
+  };
 
   return (
     <div className="flex flex-col gap-8">
       {/* filter */}
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-1">
-          <MySelect options={labelOptions} selected={labelOptions[0].value} />
-          <MyTextField
-            id="searchItem"
-            endIcon={<SearchIcon />}
-            placeholder="Nhập nội dung tìm kiếm"
-            className="w-[300px]"
-          />
-        </div>
-        <div className="flex flex-row items-center gap-3">
-          <div>Danh mục</div>
           <MySelect
-            options={mainCategories}
-            selected={mainCategories[0].value}
+            options={labelOptions}
+            selected={selectedOption.value}
+            onSelectItem={(item: Item) => setSelectedOption(item)}
           />
+          <form
+            className="flex-1 text-slate-900 dark:text-slate-100"
+            onSubmit={(e) => {
+              handleRefetch();
+              e.preventDefault();
+            }}
+          >
+            <MyTextField
+              id="searchItem"
+              endIcon={<SearchIcon />}
+              placeholder="Nhập nội dung tìm kiếm"
+              className="w-[300px]"
+              onChange={(event) => setSearchText(event.target.value)}
+            />
+          </form>
         </div>
       </div>
+
       {/* table */}
       <div className="max-w-[100%] overflow-hidden rounded-[10px]">
         <div className="overflow-x-auto">
@@ -133,6 +169,7 @@ const ViolateItemsTable = () => {
               <tr className="hover:bg-secondary-c100 hover:text-grey-c700">
                 <th className="py-4 pl-3">Mã sản phẩm</th>
                 <th className="px-1 py-4">Sản phẩm</th>
+                <th className="px-1 py-4">Trạng thái</th>
                 <th className="px-1 py-4">Ngày phát hiện vi phạm</th>
                 <th className="px-1 py-4">Lý do</th>
                 <th className="px-1 py-4">Gợi ý chỉnh sửa</th>
@@ -163,6 +200,9 @@ const ViolateItemsTable = () => {
                           </div>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-1 py-4 align-top">
+                      <MyLabel type="error">Vi phạm</MyLabel>
                     </td>
                     <td className="px-1 py-4 align-top">
                       {formatDate(product?.updatedAt)}
@@ -210,6 +250,13 @@ const ViolateItemsTable = () => {
           </table>
         </div>
       </div>
+      <MyPagination
+        page={page}
+        handlePageChange={handlePageChange}
+        handleRowPerPageChange={handleRowPerPageChange}
+        total={count}
+        rowsPerPage={rowsPage}
+      />
     </div>
   );
 };
