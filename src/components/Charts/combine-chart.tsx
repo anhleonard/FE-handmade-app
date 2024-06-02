@@ -41,10 +41,23 @@ function generateDateLabels() {
 
 const timeLabels = generateDateLabels();
 
+function findMaxY(series: Series) {
+  if (!series || !series.data || series.data.length === 0) {
+    return 0;
+  }
+
+  const yValues = series.data.map((dataPoint) => dataPoint.y);
+
+  const maxValue = Math.max(...yValues);
+
+  return maxValue;
+}
+
 const CombineChart = () => {
   const dispatch = useDispatch();
   const [sales, setSales] = useState<Sale[]>([]);
   const [series, setSeries] = useState<Series[]>([]);
+  const [maxOrder, setMaxOrder] = useState<number>(0);
 
   const getStoreSales = async () => {
     try {
@@ -73,7 +86,7 @@ const CombineChart = () => {
 
           series.push(seriesItem);
         }
-
+        setMaxOrder(findMaxY(series[1]) + 5);
         setSeries(series);
         setSales(res);
       }
@@ -94,7 +107,7 @@ const CombineChart = () => {
     getStoreSales();
   }, []);
 
-  const [options] = useState<ApexOptions>({
+  const options: ApexOptions = {
     chart: {
       height: 500,
       type: "line",
@@ -157,9 +170,10 @@ const CombineChart = () => {
             color: `${COLORS.grey.c900}`,
           },
         },
+        max: maxOrder,
       },
     ],
-  });
+  };
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">

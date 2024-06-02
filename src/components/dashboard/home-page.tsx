@@ -7,6 +7,7 @@ import CardDataStats from "./CardDataStats";
 import MapOne from "../Maps/MapOne";
 import { COLORS } from "@/enum/colors";
 import CombineChart from "../Charts/combine-chart";
+import ProgramCard from "../Charts/programs";
 
 const HomePage: React.FC = () => {
   return (
@@ -179,10 +180,10 @@ const HomePage: React.FC = () => {
       </div>
 
       <div className="2xl:mt-7.5 2xl:gap-7.5 mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6">
-        <ChartOne />
-        <ChartTwo />
         <PieChart />
-        <MapOne />
+        <ProgramCard />
+        {/* <ChartTwo /> */}
+        {/* <MapOne /> */}
       </div>
     </>
   );

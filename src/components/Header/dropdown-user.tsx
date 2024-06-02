@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import { getCurrentUser } from "@/enum/functions";
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
 const DropdownUser = () => {
   const router = useRouter();
@@ -39,12 +39,17 @@ const DropdownUser = () => {
     return () => document.removeEventListener("keydown", keyHandler);
   });
 
+  const handleLogout = () => {
+    localStorage.clear();
+    router.push("/auth/signin");
+  };
+
   return (
     <div className="relative">
       <Link
         ref={trigger}
         onClick={() => setDropdownOpen(!dropdownOpen)}
-        className="flex items-center gap-4"
+        className="flex items-center gap-1"
         href="#"
       >
         <span className="hidden text-right lg:block">
@@ -53,20 +58,7 @@ const DropdownUser = () => {
           </span>
         </span>
 
-        <span className="h-12 w-12 rounded-full">
-          <Image
-            width={112}
-            height={112}
-            src={"/images/common-avatar.jpg"}
-            style={{
-              width: "auto",
-              height: "auto",
-            }}
-            alt="User"
-          />
-        </span>
-
-        <KeyboardArrowDownRoundedIcon/>
+        <KeyboardArrowDownRoundedIcon />
       </Link>
 
       {/* <!-- Dropdown Start --> */}
@@ -78,33 +70,20 @@ const DropdownUser = () => {
           dropdownOpen === true ? "block" : "hidden"
         }`}
       >
-        <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
+        <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-4 dark:border-strokedark">
           <li>
             <Link
               href="/profile"
               className="hover:text-primary flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out lg:text-base"
             >
-              Thông tin cá nhân
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              className="hover:text-primary flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out lg:text-base"
-            >
-              Shop của tôi
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/settings"
-              className="hover:text-primary flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out lg:text-base"
-            >
-              Account Settings
+              Cửa hàng của tôi
             </Link>
           </li>
         </ul>
-        <button className="hover:text-primary flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out lg:text-base">
+        <button
+          onClick={() => handleLogout()}
+          className="hover:text-primary flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out lg:text-base"
+        >
           Đăng xuất
         </button>
       </div>

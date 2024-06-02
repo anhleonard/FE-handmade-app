@@ -153,6 +153,7 @@ export type Store = {
   isBanned: boolean;
   description: string;
   mainBusiness: string;
+  address: string;
   productAmount: number;
   avgStoreRating: number;
   followerAmount: number;

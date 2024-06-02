@@ -62,3 +62,17 @@ export type UpdateCollectionValues = {
   name?: string;
   collectionProductIds?: number[];
 };
+
+export type UpdateStoreValues = {
+  name?: string;
+  avatar?: string;
+  description?: string;
+  mainBusiness?: string;
+  address?: string;
+};
+
+export type UpdateSellerValues = {
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+};

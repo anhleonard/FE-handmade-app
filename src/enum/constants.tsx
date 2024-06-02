@@ -27,6 +27,9 @@ import ProcessingAuctionsTab from "@/app/auctions/my-auctions/processing-auction
 import FinishedAuctionsTab from "@/app/auctions/my-auctions/finished-auctions/finished-auctions-table";
 import CanceledAuctionsTab from "@/app/auctions/my-auctions/canceled-auctions/canceled-auctions-table";
 import { FilterTime } from "./defined-type";
+import StoreProfile from "@/app/(profile)/store-profile/page";
+import EditSellerModal from "@/components/profile/edit-seller-modal";
+import SellerProfile from "@/app/(profile)/seller-profile/page";
 
 export const Page = 1;
 export const Limit = 5;
@@ -110,6 +113,20 @@ export const minOrderTypes = [
 export const applicableProductTypes = [
   { label: "Tất cả sản phẩm", value: "ALL_ITEMS", index: 0 },
   { label: "Tùy chỉnh sản phẩm", value: "CUSTOM_ITEMS", index: 1 },
+];
+
+// profile tabs
+export const profileTabs = [
+  {
+    label: "Thông tin cơ bản",
+    value: "1",
+    content: <StoreProfile />,
+  },
+  {
+    label: "Hồ sơ người bán",
+    value: "2",
+    content: <SellerProfile />,
+  },
 ];
 
 // product tabs
