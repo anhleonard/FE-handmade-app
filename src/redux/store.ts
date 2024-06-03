@@ -6,6 +6,7 @@ import alertSlice from "./slices/alertSlice";
 import refetchSlice from "./slices/refetchSlice";
 import secondModalSlice from "./slices/secondModalSlice";
 import idCardSlice from "./slices/idCardSlice";
+import sidebarSlice from "./slices/sidebarSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     alert: alertSlice,
     refetch: refetchSlice,
     idCards: idCardSlice,
+    sidebar: sidebarSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

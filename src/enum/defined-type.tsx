@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Url } from "url";
-import { AlertStatus, ProductStatus, Role } from "./constants";
+import { AlertStatus, ProductStatus, Role, StoreStatus } from "./constants";
 import { Item } from "@/libs/select";
 
 export type ColTabItem = {
@@ -158,6 +158,8 @@ export type Store = {
   avgStoreRating: number;
   followerAmount: number;
   owner: User;
+  status: StoreStatus;
+  notApproveReason: string;
 };
 
 export type OrderProduct = {

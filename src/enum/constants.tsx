@@ -377,3 +377,9 @@ export enum AuctionStatus {
   COMPLETED = "COMPLETED",
   CANCELED = "CANCELED",
 }
+
+export enum StoreStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  BANNED = "BANNED",
+}

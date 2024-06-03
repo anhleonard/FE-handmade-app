@@ -2,19 +2,25 @@
 import React, { useState, ReactNode } from "react";
 import Sidebar from "@/components/sidebar";
 import Header from "@/components/Header";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 export default function DefaultLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const sidebar = useSelector((state: RootState) => state.sidebar);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <div className="flex h-screen overflow-hidden">
         {/* <!-- ===== Sidebar Start ===== --> */}
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        {sidebar?.isOpen ? (
+          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        ) : null}
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
@@ -24,8 +30,8 @@ export default function DefaultLayout({
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}
-          <main>
-            <div className="max-w-screen-2xl 2xl:p-10 mx-auto p-4 md:p-6">
+          <main className="flex-1">
+            <div className="max-w-screen-2xl 2xl:p-10 mx-auto h-full p-4 md:p-6">
               {children}
             </div>
           </main>

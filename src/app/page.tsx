@@ -3,10 +3,8 @@ import DefaultLayout from "@/components/layouts/default-layout";
 
 export default function Home() {
   return (
-    <>
-      <DefaultLayout>
-        <HomePage />
-      </DefaultLayout>
-    </>
+    <DefaultLayout>
+      <HomePage />
+    </DefaultLayout>
   );
 }

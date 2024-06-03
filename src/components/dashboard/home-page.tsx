@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ChartOne from "../Charts/ChartOne";
 import PieChart from "../Charts/pie-chart";
 import ChartTwo from "../Charts/ChartTwo";
@@ -8,10 +8,58 @@ import MapOne from "../Maps/MapOne";
 import { COLORS } from "@/enum/colors";
 import CombineChart from "../Charts/combine-chart";
 import ProgramCard from "../Charts/programs";
+import { useDispatch, useSelector } from "react-redux";
+import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
+import storage from "@/apis/storage";
+import { singleStore } from "@/apis/services/stores";
+import { AlertState, Store } from "@/enum/defined-type";
+import { AlertStatus, StoreStatus } from "@/enum/constants";
+import { openAlert } from "@/redux/slices/alertSlice";
+import InactiveStorePage from "../stores/inactive-store";
+import { closeSideBar, openSideBar } from "@/redux/slices/sidebarSlice";
+import { RootState } from "@/redux/store";
 
 const HomePage: React.FC = () => {
+  const dispatch = useDispatch();
+  const [store, setStore] = useState<Store>();
+  const loading = useSelector((state: RootState) => state.loading);
+
+  const getSingleStore = async () => {
+    try {
+      dispatch(openLoading());
+      const token = storage.getLocalAccessToken();
+      const res: Store = await singleStore(token);
+      if (res) {
+        setStore(res);
+      }
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    } finally {
+      dispatch(closeLoading());
+    }
+  };
+
+  useEffect(() => {
+    getSingleStore();
+  }, []);
+
+  if (!store || store?.status !== StoreStatus.ACTIVE) {
+    dispatch(closeSideBar());
+    return !loading?.isOpen ? (
+      <InactiveStorePage store={store} />
+    ) : (
+      <div className="flex-1"></div>
+    );
+  } else dispatch(openSideBar());
+
   return (
-    <>
+    <div>
       <div className="2xl:gap-7.5 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
         <CardDataStats
           title="Đơn hàng cần xác nhận"
@@ -57,6 +105,7 @@ const HomePage: React.FC = () => {
             />
           </svg>
         </CardDataStats>
+
         <CardDataStats
           title="Sản phẩm vi phạm"
           total="1026"
@@ -89,6 +138,7 @@ const HomePage: React.FC = () => {
             />
           </svg>
         </CardDataStats>
+
         <CardDataStats
           title="Tổng doanh thu"
           total="1027"
@@ -116,6 +166,7 @@ const HomePage: React.FC = () => {
             />
           </svg>
         </CardDataStats>
+
         <CardDataStats
           title="Tổng số sản phẩm"
           total="1028"
@@ -138,6 +189,7 @@ const HomePage: React.FC = () => {
             />
           </svg>
         </CardDataStats>
+
         <CardDataStats
           title="Tổng số đơn hàng"
           total="1029"
@@ -185,7 +237,7 @@ const HomePage: React.FC = () => {
         {/* <ChartTwo /> */}
         {/* <MapOne /> */}
       </div>
-    </>
+    </div>
   );
 };
 
