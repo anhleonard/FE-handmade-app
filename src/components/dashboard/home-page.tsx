@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import ChartOne from "../Charts/ChartOne";
 import PieChart from "../Charts/pie-chart";
 import ChartTwo from "../Charts/ChartTwo";
@@ -18,11 +18,13 @@ import { openAlert } from "@/redux/slices/alertSlice";
 import InactiveStorePage from "../stores/inactive-store";
 import { closeSideBar, openSideBar } from "@/redux/slices/sidebarSlice";
 import { RootState } from "@/redux/store";
+import { refetchComponent } from "@/redux/slices/refetchSlice";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   const [store, setStore] = useState<Store>();
   const loading = useSelector((state: RootState) => state.loading);
+  const refetchQueries = useSelector((state: RootState) => state.refetch.time);
 
   const getSingleStore = async () => {
     try {
@@ -47,12 +49,16 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     getSingleStore();
-  }, []);
+  }, [refetchQueries]);
+
+  const handleRefetch = () => {
+    dispatch(refetchComponent());
+  };
 
   if (!store || store?.status !== StoreStatus.ACTIVE) {
     dispatch(closeSideBar());
     return !loading?.isOpen ? (
-      <InactiveStorePage store={store} />
+      <InactiveStorePage store={store} handleRefetch={handleRefetch} />
     ) : (
       <div className="flex-1"></div>
     );

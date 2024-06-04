@@ -221,6 +221,8 @@ export type User = {
   phoneNumber: string;
   dateOfBirth: Date;
   role: Role;
+  frontCard: string;
+  backCard: string;
 };
 
 export type FilterTime = {

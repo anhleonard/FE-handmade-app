@@ -54,12 +54,14 @@ export type CreateStoreValues = {
 };
 
 export type ChangeStoreValues = {
-  name: string;
-  avatar: string;
-  description: string;
-  mainBusiness: string;
-  frontCard: string;
-  backCard: string;
+  name?: string;
+  avatar?: string;
+  description?: string;
+  mainBusiness?: string;
+  frontCard?: string;
+  backCard?: string;
+  address?: string;
+  notApproveReason?: string | null;
 };
 
 export type CreateCollectionValues = {

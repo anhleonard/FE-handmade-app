@@ -10,16 +10,17 @@ import ChangeStoreModal from "./change-store-modal";
 
 type Props = {
   store?: Store;
+  handleRefetch: () => void;
 };
 
-const InactiveStorePage = ({ store }: Props) => {
+const InactiveStorePage = ({ store, handleRefetch }: Props) => {
   const dispatch = useDispatch();
 
   const handleOpenEditModal = () => {
     const modal = {
       isOpen: true,
       title: "Chỉnh sửa cửa hàng",
-      content: <ChangeStoreModal />,
+      content: <ChangeStoreModal store={store} handleRefetch={handleRefetch} />,
       screen: SCREEN.BASE,
     };
     dispatch(openModal(modal));
@@ -57,7 +58,8 @@ const InactiveStorePage = ({ store }: Props) => {
           <div className="flex flex-col items-center gap-2">
             <MyLabel type="warning">Chờ duyệt</MyLabel>
             <div>
-              Cửa hàng chưa được duyệt để hoạt động. Vui lòng quay lại sau.
+              Cửa hàng đang trong quá trình xét duyệt thông tin. Vui lòng quay
+              lại sau.
             </div>
           </div>
         )

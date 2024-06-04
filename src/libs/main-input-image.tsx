@@ -13,6 +13,7 @@ type MainInputImageProps = {
   rounded?: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onDeleteImage?: (event: MouseEvent<HTMLDivElement>) => void;
+  className?: string;
 };
 
 export default function MainInputImage({
@@ -24,9 +25,10 @@ export default function MainInputImage({
   height = "!h-[250px]",
   rounded = "!rounded-2xl",
   onDeleteImage,
+  className = "",
 }: MainInputImageProps) {
   return (
-    <div>
+    <div className={className}>
       {previewImage && (
         <div className="relative">
           <Image
