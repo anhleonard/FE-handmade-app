@@ -30,6 +30,8 @@ import { FilterTime } from "./defined-type";
 import StoreProfile from "@/app/(profile)/store-profile/page";
 import EditSellerModal from "@/components/profile/edit-seller-modal";
 import SellerProfile from "@/app/(profile)/seller-profile/page";
+import DeliveryAuctionsTab from "@/app/auctions/my-auctions/delivery-auctions/delivery-auctions-table";
+import WaitingAuctionsTab from "@/app/auctions/my-auctions/waiting-auctions/waiting-auctions-table";
 
 export const Page = 1;
 export const Limit = 5;
@@ -316,18 +318,28 @@ export const sellerAuctionTabs = [
     content: <AllAuctionsTab />,
   },
   {
-    label: "Đang tiến hành",
+    label: "Chờ nhận",
     value: "2",
+    content: <WaitingAuctionsTab />,
+  },
+  {
+    label: "Đang tiến hành",
+    value: "3",
     content: <ProcessingAuctionsTab />,
   },
   {
+    label: "Đang vận chuyển",
+    value: "4",
+    content: <DeliveryAuctionsTab />,
+  },
+  {
     label: "Đã hoàn thành",
-    value: "3",
+    value: "5",
     content: <FinishedAuctionsTab />,
   },
   {
     label: "Đã hủy",
-    value: "4",
+    value: "6",
     content: <CanceledAuctionsTab />,
   },
 ];
@@ -371,6 +383,7 @@ export const DATA_COMPLETED_TIME: FilterTime[] = [
 ];
 
 export enum AuctionStatus {
+  SENT_SELLER = "SENT_SELLER",
   AUCTIONING = "AUCTIONING",
   PROGRESS = "PROGRESS",
   DELIVERY = "DELIVERY",

@@ -38,7 +38,7 @@ const Button = forwardRef<
   const colorAttitude = useMemo(() => {
     return {
       error: `bg-support-c500 text-white px-5 py-2 text-sm hover:opacity-90 font-medium border-none`,
-      grey: `bg-grey-c50 text-grey-c900 px-5 py-2 text-sm hover:bg-grey-c100 font-medium border-none`,
+      grey: `bg-grey-c100 text-grey-c900 px-5 py-2 text-sm hover:bg-grey-c100 font-medium border-none`,
       secondary: `bg-secondary-c900 text-white px-5 py-2 text-sm hover:opacity-90 font-medium border-none`,
       primary: `bg-primary-c900 text-white px-5 py-2 text-sm hover:opacity-90 font-medium border-none`,
       info: `bg-blue-c900 text-white px-5 py-2 text-sm hover:opacity-90 font-medium border-none`,

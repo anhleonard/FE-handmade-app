@@ -65,18 +65,27 @@ const InactiveStorePage = ({ store, handleRefetch }: Props) => {
         )
       ) : null}
 
-      {store?.status === StoreStatus.INACTIVE && store?.notApproveReason ? (
+      {store?.status === StoreStatus.BANNED ? (
+        <div className="flex flex-col items-center gap-2">
+          <MyLabel type="error">Đã bị đình chỉ</MyLabel>
+          <div className="flex flex-col items-center justify-center">
+            <div>Cửa hàng đã bị đình chỉ hoạt động do vi phạm.</div>
+            <div>Thời gian đình chỉ là 6 tháng kể từ ngày bị đình chỉ.</div>
+          </div>
+        </div>
+      ) : null}
+
+      {(store?.status === StoreStatus.INACTIVE && store?.notApproveReason) ||
+      store?.status === StoreStatus.BANNED ? (
         <div className="grid w-[560px] grid-cols-2 gap-8">
           <Button
             className="!w-full"
             color="black"
-            onClick={() => handleOpenReasonModal(store?.notApproveReason)}
+            onClick={() => handleOpenReasonModal(store?.bannedReason)}
           >
             Xem lí do
           </Button>
-          <Button className="!w-full" onClick={() => handleOpenEditModal()}>
-            Chỉnh sửa thông tin
-          </Button>
+          <Button className="!w-full">Khiếu nại</Button>
         </div>
       ) : null}
     </div>

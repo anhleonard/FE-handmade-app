@@ -52,11 +52,6 @@ const SellerAunctionCard = ({ auction, status }: SellerAunctionCardProps) => {
                 <div className="line-clamp-4 text-justify text-sm font-normal text-grey-c900">
                   {auction?.description}
                 </div>
-                {/* <div className="flex flex-row items-center gap-3 text-sm font-medium text-primary-c900">
-                  <div className="hover:cursor-pointer">Đan len</div>
-                  <div className="hover:cursor-pointer">Thú nhồi bông</div>
-                  <div className="hover:cursor-pointer">Quà tặng</div>
-                </div> */}
               </div>
               {/* right content */}
               <div className="col-span-1 flex flex-col gap-3">
@@ -91,6 +86,12 @@ const SellerAunctionCard = ({ auction, status }: SellerAunctionCardProps) => {
                   )}
                   {status === AuctionStatus.CANCELED && (
                     <MyLabel type="error">Đã hủy</MyLabel>
+                  )}
+                  {status === AuctionStatus.DELIVERY && (
+                    <MyLabel type="delivery">Đang vận chuyển</MyLabel>
+                  )}
+                  {status === AuctionStatus.SENT_SELLER && (
+                    <MyLabel type="warning">Chờ nhận</MyLabel>
                   )}
                 </div>
               </div>

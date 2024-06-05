@@ -87,3 +87,8 @@ export type UpdateSellerValues = {
   email?: string;
   phoneNumber?: string;
 };
+
+export type RejectAuctionValues = {
+  isAccepted: boolean;
+  additionalComment: string;
+};

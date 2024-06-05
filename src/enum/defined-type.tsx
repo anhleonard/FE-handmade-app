@@ -160,6 +160,7 @@ export type Store = {
   owner: User;
   status: StoreStatus;
   notApproveReason: string;
+  bannedReason: string;
 };
 
 export type OrderProduct = {

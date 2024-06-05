@@ -1,5 +1,4 @@
 import {
-  calculateAverageBidderMoney,
   calculateDaysAfterAccepted,
   calculateRemainingDays,
   findMaxPercentage,
@@ -23,20 +22,13 @@ import storage from "@/apis/storage";
 import { headerUrl } from "@/apis/services/authentication";
 
 type Props = {
-  type?: "client" | "seller";
   status: AuctionStatus;
   auction: Auction;
   bidder?: Bidder;
   handleRefetch: () => void;
 };
 
-const DetailAuction = ({
-  type = "client",
-  status,
-  auction,
-  bidder,
-  handleRefetch,
-}: Props) => {
+const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
   const dispatch = useDispatch();
 
   const minMax = auction?.candidates?.length
@@ -86,7 +78,47 @@ const DetailAuction = ({
     }
   };
 
-  const handleCancelAuction = () => {
+  const handleConfirmDoingAuction = () => {
+    const confirm: any = {
+      isOpen: true,
+      title: "XÁC NHẬN THỰC HIỆN DỰ ÁN",
+      message: "Bạn có chắc chắn thực hiện dự án này không?",
+      feature: "CONFIRM_CONTACT_US",
+      onConfirm: async () => handleDoingAuction(),
+    };
+
+    dispatch(openConfirm(confirm));
+  };
+
+  const handleDoingAuction = async () => {
+    try {
+      dispatch(openLoading());
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    } finally {
+      dispatch(closeLoading());
+    }
+  };
+
+  const handleConfirmRejectAuction = () => {
+    const confirm: any = {
+      isOpen: true,
+      title: "XÁC NHẬN TỪ CHỐI NHẬN",
+      message: "Bạn đã chắc chắn từ chối nhận dự án này chưa?",
+      feature: "CONFIRM_CONTACT_US",
+      onConfirm: async () => {},
+    };
+
+    dispatch(openConfirm(confirm));
+  };
+
+  const handleConfirmCancelAuction = () => {
     const confirm: any = {
       isOpen: true,
       title: "XÁC NHẬN HỦY",
@@ -100,7 +132,7 @@ const DetailAuction = ({
 
   return (
     <div>
-      <div className="rounded-2xl border-[2px] border-grey-c50">
+      <div className="rounded-2xl border-l-[2px] border-r-[2px] border-t-[2px] border-grey-c50">
         <ListItem
           className={`rounded-tl-2xl rounded-tr-2xl border-b-[2px] border-grey-c50 bg-white`}
           disablePadding
@@ -119,29 +151,26 @@ const DetailAuction = ({
                   <MyLabel type="error">Quá hạn</MyLabel>
                 )
               ) : null}
-              {type === "seller" && status !== AuctionStatus.CANCELED && (
+              {status === AuctionStatus.PROGRESS && (
                 <MyLabel type="success">
                   Đạt tiến độ: {findMaxPercentage(auction?.progresses)}%
                 </MyLabel>
               )}
             </div>
-            {type === "seller" ? (
-              <>
-                {status === AuctionStatus.PROGRESS && (
-                  <MyLabel type="progress">Đang tiến hành</MyLabel>
-                )}
-                {status === AuctionStatus.COMPLETED && (
-                  <MyLabel type="success">Đã hoàn thành</MyLabel>
-                )}
-                {status === AuctionStatus.CANCELED && (
-                  <MyLabel type="error">Đã hủy</MyLabel>
-                )}
-              </>
-            ) : (
-              <MyLabel type="success">
-                Max: {formatCurrency(auction?.maxAmount)}
-              </MyLabel>
-            )}
+            <>
+              {status === AuctionStatus.SENT_SELLER && (
+                <MyLabel type="warning">Chờ nhận</MyLabel>
+              )}
+              {status === AuctionStatus.PROGRESS && (
+                <MyLabel type="progress">Đang tiến hành</MyLabel>
+              )}
+              {status === AuctionStatus.COMPLETED && (
+                <MyLabel type="success">Đã hoàn thành</MyLabel>
+              )}
+              {status === AuctionStatus.CANCELED && (
+                <MyLabel type="error">Đã hủy</MyLabel>
+              )}
+            </>
           </div>
         </ListItem>
         <Collapse in>
@@ -195,6 +224,7 @@ const DetailAuction = ({
             </ListItem>
 
             {(auction?.status === AuctionStatus.AUCTIONING ||
+              auction?.status === AuctionStatus.SENT_SELLER ||
               !auction?.status) && (
               <ListItem
                 className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
@@ -210,13 +240,18 @@ const DetailAuction = ({
             )}
 
             {(auction?.status === AuctionStatus.AUCTIONING ||
+              auction?.status === AuctionStatus.SENT_SELLER ||
               !auction?.status) && (
               <ListItem
                 className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
                 disablePadding
               >
                 <div className="flex flex-col gap-1">
-                  <div className="font-bold text-grey-c900">Ngày đóng</div>
+                  <div className="font-bold text-grey-c900">
+                    {auction?.status === AuctionStatus.SENT_SELLER
+                      ? "Hạn xác nhận"
+                      : "Ngày đóng"}
+                  </div>
                   <div className="font-medium text-primary-c900">
                     {formatCommonTime(auction?.closedDate)}
                   </div>
@@ -239,21 +274,22 @@ const DetailAuction = ({
             ) : null}
 
             {/* Số ngày dự kiến hoàn thành dự án mà client đặt */}
-            {auction?.status === AuctionStatus.AUCTIONING && (
-              <ListItem
-                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
-                disablePadding
-              >
-                <div className="flex flex-col gap-1">
-                  <div className="font-bold text-grey-c900">
-                    Số ngày dự kiến hoàn thành dự án
+            {auction?.status === AuctionStatus.AUCTIONING ||
+              (auction?.status === AuctionStatus.SENT_SELLER && (
+                <ListItem
+                  className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
+                  disablePadding
+                >
+                  <div className="flex flex-col gap-1">
+                    <div className="font-bold text-grey-c900">
+                      Số ngày dự kiến hoàn thành dự án
+                    </div>
+                    <div className="font-medium text-primary-c900">
+                      {auction?.maxDays}
+                    </div>
                   </div>
-                  <div className="font-medium text-primary-c900">
-                    {auction?.maxDays}
-                  </div>
-                </div>
-              </ListItem>
-            )}
+                </ListItem>
+              ))}
 
             {status !== AuctionStatus.AUCTIONING && (
               <ListItem
@@ -345,33 +381,50 @@ const DetailAuction = ({
           </List>
         </Collapse>
       </div>
-      {type === "seller" &&
-        status === AuctionStatus.PROGRESS &&
-        !auction?.readyToLaunch && (
-          <div className="mt-4 flex flex-row justify-end gap-3">
-            <Button
-              className="!w-fit !px-3 !py-1.5"
-              color="grey"
-              onClick={() => handleCancelAuction()}
-            >
-              <span className="text-xs font-medium">Hủy dự án</span>
-            </Button>
-            <Button
-              className="!w-fit !px-3 !py-1.5"
-              color="primary"
-              onClick={() => handleSubmitAuction()}
-            >
-              <span className="text-xs font-medium">Dự án đã xong?</span>
-            </Button>
-          </div>
-        )}
-      {type === "seller" &&
-        status === AuctionStatus.PROGRESS &&
-        auction?.readyToLaunch && (
-          <div className="mt-4 flex flex-row justify-end">
-            <MyLabel type="success">Đã thông báo tới admin!</MyLabel>
-          </div>
-        )}
+
+      {status === AuctionStatus.SENT_SELLER && (
+        <div className="mt-6 flex flex-row justify-end gap-3">
+          <Button
+            className="!w-fit !text-xs !font-medium"
+            color="grey"
+            onClick={() => handleConfirmCancelAuction()}
+          >
+            Từ chối nhận
+          </Button>
+          <Button
+            className="!w-fit !text-xs !font-medium"
+            color="primary"
+            onClick={() => handleConfirmDoingAuction()}
+          >
+            Nhận dự án
+          </Button>
+        </div>
+      )}
+
+      {status === AuctionStatus.PROGRESS && !auction?.readyToLaunch && (
+        <div className="mt-4 flex flex-row justify-end gap-3">
+          <Button
+            className="!w-fit !px-3 !py-1.5 !text-xs !font-medium"
+            color="grey"
+            onClick={() => handleConfirmCancelAuction()}
+          >
+            Hủy dự án
+          </Button>
+          <Button
+            className="!w-fit !px-3 !py-1.5 !text-xs !font-medium"
+            color="primary"
+            onClick={() => handleSubmitAuction()}
+          >
+            Dự án đã xong?
+          </Button>
+        </div>
+      )}
+
+      {status === AuctionStatus.PROGRESS && auction?.readyToLaunch && (
+        <div className="mt-4 flex flex-row justify-end">
+          <MyLabel type="success">Đã thông báo tới admin!</MyLabel>
+        </div>
+      )}
     </div>
   );
 };
