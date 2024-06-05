@@ -93,6 +93,8 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
   const handleDoingAuction = async () => {
     try {
       dispatch(openLoading());
+      
+
     } catch (error: any) {
       let alert: AlertState = {
         isOpen: true,
