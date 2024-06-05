@@ -5,13 +5,12 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Box, Tab } from "@mui/material";
 import { useState } from "react";
 
-const MyAuctionsScreen = () => {
-  const [value, setValue] = useState("1");
+type Props = {
+  value: string;
+  handleChange: any;
+};
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
-
+const MyAuctionsScreen = ({ value = "1", handleChange }: Props) => {
   return (
     <div className="w-full rounded-lg bg-white px-8 py-4">
       <div className="mb-5 flex flex-col gap-3">

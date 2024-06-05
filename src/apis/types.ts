@@ -1,4 +1,4 @@
-import { EnumOrderStatus } from "@/enum/constants";
+import { AuctionStatus, EnumOrderStatus } from "@/enum/constants";
 
 export type LoginFormValues = {
   email: string;
@@ -88,7 +88,18 @@ export type UpdateSellerValues = {
   phoneNumber?: string;
 };
 
-export type RejectAuctionValues = {
-  isAccepted: boolean;
+export type CancelAuctionValues = {
+  status: AuctionStatus;
   additionalComment: string;
+};
+
+//refund money
+export type CreateRefundPaymentValues = {
+  zp_trans_id?: string;
+  amount?: number;
+};
+
+export type PaidAuctionValues = {
+  auctionId: number;
+  type: string;
 };

@@ -15,11 +15,14 @@ import { AlertState, Auction, Bidder } from "@/enum/defined-type";
 import { AlertStatus, AuctionStatus } from "@/enum/constants";
 import { useDispatch } from "react-redux";
 import { openAlert } from "@/redux/slices/alertSlice";
-import { openConfirm } from "@/redux/slices/confirmSlice";
+import { closeConfirm, openConfirm } from "@/redux/slices/confirmSlice";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
 import { updateAuction } from "@/apis/services/auctions";
 import storage from "@/apis/storage";
 import { headerUrl } from "@/apis/services/authentication";
+import CancelAuctionModal from "./modals/cancel-auction-modal";
+import { SCREEN } from "@/enum/setting";
+import { openModal } from "@/redux/slices/modalSlice";
 
 type Props = {
   status: AuctionStatus;
@@ -93,8 +96,15 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
   const handleDoingAuction = async () => {
     try {
       dispatch(openLoading());
-      
-
+      const token = storage.getLocalAccessToken();
+      const variables = {
+        status: AuctionStatus.PROGRESS,
+      };
+      const res = await updateAuction(auction?.id, variables, token);
+      if (res) {
+        dispatch(closeConfirm());
+        handleRefetch();
+      }
     } catch (error: any) {
       let alert: AlertState = {
         isOpen: true,
@@ -120,16 +130,16 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
     dispatch(openConfirm(confirm));
   };
 
-  const handleConfirmCancelAuction = () => {
-    const confirm: any = {
+  const handleOpenCancelModal = () => {
+    const modal = {
       isOpen: true,
-      title: "XÁC NHẬN HỦY",
-      message: "Bạn đã chắc chắn hủy dự án này chưa?",
-      feature: "CONFIRM_CONTACT_US",
-      onConfirm: async () => {},
+      title: "Nêu lý do hủy",
+      content: (
+        <CancelAuctionModal auction={auction} handleRefetch={handleRefetch} />
+      ),
+      screen: SCREEN.BASE,
     };
-
-    dispatch(openConfirm(confirm));
+    dispatch(openModal(modal));
   };
 
   return (
@@ -389,7 +399,7 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
           <Button
             className="!w-fit !text-xs !font-medium"
             color="grey"
-            onClick={() => handleConfirmCancelAuction()}
+            onClick={() => handleConfirmRejectAuction()}
           >
             Từ chối nhận
           </Button>
@@ -408,7 +418,7 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
           <Button
             className="!w-fit !px-3 !py-1.5 !text-xs !font-medium"
             color="grey"
-            onClick={() => handleConfirmCancelAuction()}
+            onClick={() => handleOpenCancelModal()}
           >
             Hủy dự án
           </Button>

@@ -251,6 +251,8 @@ export type Auction = {
   shipping: Shipping;
   candidates: Bidder[];
   progresses: Progress[];
+  canceledBy: User;
+  paids: PaidAuction[];
 };
 
 export type Bidder = {
@@ -291,4 +293,13 @@ export type Sale = {
   orderDate: string;
   totalOrders: number;
   totalRevenue: number;
+};
+
+export type PaidAuction = {
+  id: number;
+  isRefund: boolean;
+  type: string;
+  apptransid: string;
+  zp_trans_id: string;
+  auction: Auction;
 };

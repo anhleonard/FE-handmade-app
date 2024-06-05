@@ -30,6 +30,15 @@ class Storage {
   removeAccessToken() {
     this.localStorage.removeItem("accessToken");
   }
+
+  //auction tab id
+  updateAuctionTab(value: string) {
+    this.localStorage.setItem("auctionTabId", value);
+  }
+
+  getAuctionTab() {
+    return this.localStorage.getItem("auctionTabId");
+  }
 }
 
 export default new Storage();

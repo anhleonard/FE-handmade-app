@@ -3,9 +3,7 @@ import React, { useEffect, useState } from "react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { COLORS } from "@/enum/colors";
 import DetailAuction from "@/components/auctions/detail-auction";
-import { useParams, useRouter } from "next/navigation";
-import SellerAuctionInformation from "@/components/auctions/seller-auction-information";
-import ListSellerPrice from "./list-seller-price";
+import { useRouter } from "next/navigation";
 import UpdateWorkForm from "@/components/auctions/seller-auctions/update-work-form";
 import ContentUpdatedWork from "@/components/auctions/seller-auctions/content-updated-work";
 import RatingAuction from "@/components/auctions/seller-auctions/rating-auction";
@@ -83,7 +81,6 @@ const MyDetailSellerAuctionScreen = ({ auctionId }: Props) => {
           <div className="flex flex-col gap-9 md:col-span-4">
             {/* DETAIL INFOR OF AUCTION */}
             <DetailAuction
-              type="seller"
               auction={auction}
               status={auction?.status as AuctionStatus}
               bidder={selectedBidder}
@@ -131,7 +128,7 @@ const MyDetailSellerAuctionScreen = ({ auctionId }: Props) => {
 
             {/* CANCEL INFORMATION */}
             {auction?.status === AuctionStatus.CANCELED && (
-              <CanceledInformation />
+              <CanceledInformation auction={auction} />
             )}
           </div>
           <div className="flex flex-col gap-4 md:col-span-1">

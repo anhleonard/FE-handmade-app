@@ -312,34 +312,34 @@ export const reviewTabs = [
 
 // my auctions tabs
 export const sellerAuctionTabs = [
-  {
-    label: "Tất cả",
-    value: "1",
-    content: <AllAuctionsTab />,
-  },
+  // {
+  //   label: "Tất cả",
+  //   value: "1",
+  //   content: <AllAuctionsTab />,
+  // },
   {
     label: "Chờ nhận",
-    value: "2",
+    value: "1",
     content: <WaitingAuctionsTab />,
   },
   {
     label: "Đang tiến hành",
-    value: "3",
+    value: "2",
     content: <ProcessingAuctionsTab />,
   },
   {
     label: "Đang vận chuyển",
-    value: "4",
+    value: "3",
     content: <DeliveryAuctionsTab />,
   },
   {
     label: "Đã hoàn thành",
-    value: "5",
+    value: "4",
     content: <FinishedAuctionsTab />,
   },
   {
     label: "Đã hủy",
-    value: "6",
+    value: "5",
     content: <CanceledAuctionsTab />,
   },
 ];
