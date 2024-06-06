@@ -1,7 +1,11 @@
 import { Collapse, List, ListItem } from "@mui/material";
 import React from "react";
 import MyLabel from "@/libs/label";
-import { calculateDaysAfterAccepted, formatCurrency } from "@/enum/functions";
+import {
+  calculateDaysAfterAccepted,
+  findMaxPercentage,
+  formatCurrency,
+} from "@/enum/functions";
 import Button from "@/libs/button";
 import { useRouter } from "next/navigation";
 import { AuctionStatus } from "@/enum/constants";
@@ -74,6 +78,16 @@ const SellerAunctionCard = ({ auction, status }: SellerAunctionCardProps) => {
                     </span>
                   </div>
                 )}
+                {status === AuctionStatus.PROGRESS ? (
+                  <div className="flex flex-row items-center gap-1">
+                    <div className="text-xs font-bold text-grey-c900">
+                      Tiến độ:
+                    </div>
+                    <div className="text-xs font-bold text-primary-c900">
+                      {findMaxPercentage(auction?.progresses)}%
+                    </div>
+                  </div>
+                ) : null}
                 <div className="flex flex-col gap-1">
                   <div className="text-xs font-bold text-grey-c900">
                     Trạng thái:{" "}

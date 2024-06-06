@@ -1,4 +1,5 @@
 import {
+  calculateAverageBidderMoney,
   calculateDaysAfterAccepted,
   calculateRemainingDays,
   findMaxPercentage,
@@ -142,6 +143,28 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
     dispatch(openModal(modal));
   };
 
+  const renderAuctionStatus = (status: AuctionStatus) => {
+    switch (status) {
+      case AuctionStatus.AUCTIONING:
+        return <MyLabel type="warning">Đang đấu giá</MyLabel>;
+
+      case AuctionStatus.PROGRESS:
+        return <MyLabel type="progress">Đang tiến hành</MyLabel>;
+
+      case AuctionStatus.DELIVERY:
+        return <MyLabel type="delivery">Đang vận chuyển</MyLabel>;
+
+      case AuctionStatus.COMPLETED:
+        return <MyLabel type="success">Đã hoàn thành</MyLabel>;
+
+      case AuctionStatus.CANCELED:
+        return <MyLabel type="error">Đã hủy</MyLabel>;
+
+      default:
+        return <MyLabel type="grey">Chờ duyệt</MyLabel>;
+    }
+  };
+
   return (
     <div>
       <div className="rounded-2xl border-l-[2px] border-r-[2px] border-t-[2px] border-grey-c50">
@@ -160,29 +183,17 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
                     Còn {calculateRemainingDays(auction?.closedDate)} ngày
                   </MyLabel>
                 ) : (
-                  <MyLabel type="error">Quá hạn</MyLabel>
+                  <MyLabel type="error">Quá hạn đấu giá</MyLabel>
                 )
               ) : null}
+
               {status === AuctionStatus.PROGRESS && (
                 <MyLabel type="success">
                   Đạt tiến độ: {findMaxPercentage(auction?.progresses)}%
                 </MyLabel>
               )}
             </div>
-            <>
-              {status === AuctionStatus.SENT_SELLER && (
-                <MyLabel type="warning">Chờ nhận</MyLabel>
-              )}
-              {status === AuctionStatus.PROGRESS && (
-                <MyLabel type="progress">Đang tiến hành</MyLabel>
-              )}
-              {status === AuctionStatus.COMPLETED && (
-                <MyLabel type="success">Đã hoàn thành</MyLabel>
-              )}
-              {status === AuctionStatus.CANCELED && (
-                <MyLabel type="error">Đã hủy</MyLabel>
-              )}
-            </>
+            <>{renderAuctionStatus(auction?.status as AuctionStatus)}</>
           </div>
         </ListItem>
         <Collapse in>
@@ -286,22 +297,109 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
             ) : null}
 
             {/* Số ngày dự kiến hoàn thành dự án mà client đặt */}
-            {auction?.status === AuctionStatus.AUCTIONING ||
-              (auction?.status === AuctionStatus.SENT_SELLER && (
-                <ListItem
-                  className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
-                  disablePadding
-                >
-                  <div className="flex flex-col gap-1">
-                    <div className="font-bold text-grey-c900">
-                      Số ngày dự kiến hoàn thành dự án
-                    </div>
-                    <div className="font-medium text-primary-c900">
-                      {auction?.maxDays}
-                    </div>
+            {(auction?.status === AuctionStatus.AUCTIONING ||
+              auction?.status === AuctionStatus.SENT_SELLER) && (
+              <ListItem
+                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
+                disablePadding
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold text-grey-c900">
+                    Số ngày dự kiến hoàn thành dự án
                   </div>
-                </ListItem>
-              ))}
+                  <div className="font-medium text-primary-c900">
+                    {auction?.maxDays}
+                  </div>
+                </div>
+              </ListItem>
+            )}
+
+            {(auction?.status === AuctionStatus.DELIVERY ||
+              auction?.status === AuctionStatus.COMPLETED) && (
+              <ListItem
+                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
+                disablePadding
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold text-grey-c900">
+                    Số ngày hoàn thành
+                  </div>
+                  <div className="font-medium text-primary-c900">
+                    {bidder?.estimatedDay &&
+                    bidder?.estimatedDay -
+                      calculateDaysAfterAccepted(
+                        bidder?.estimatedDay,
+                        bidder?.acceptedAt,
+                      ) >
+                      0 ? (
+                      `${
+                        bidder?.estimatedDay -
+                        calculateDaysAfterAccepted(
+                          bidder?.estimatedDay,
+                          bidder?.acceptedAt,
+                        )
+                      } ngày`
+                    ) : (
+                      <MyLabel type="error">Quá hạn</MyLabel>
+                    )}
+                  </div>
+                </div>
+              </ListItem>
+            )}
+
+            {status === AuctionStatus.AUCTIONING ? (
+              <ListItem
+                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
+                disablePadding
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold text-grey-c900">
+                    Số người đã đặt giá
+                  </div>
+                  <div className="font-medium text-primary-c900">
+                    {auction?.candidates?.length}
+                  </div>
+                </div>
+              </ListItem>
+            ) : null}
+
+            {status === AuctionStatus.AUCTIONING ? (
+              <ListItem
+                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
+                disablePadding
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold text-grey-c900">
+                    Giá đặt trung bình
+                  </div>
+                  <div className="font-medium text-primary-c900">
+                    {formatCurrency(
+                      auction?.candidates?.length
+                        ? calculateAverageBidderMoney(auction?.candidates)
+                        : 0,
+                    )}
+                  </div>
+                </div>
+              </ListItem>
+            ) : null}
+
+            {status === AuctionStatus.AUCTIONING ? (
+              <ListItem
+                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
+                disablePadding
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold text-grey-c900">
+                    Giá đặt thấp nhất/ cao nhất
+                  </div>
+                  <div className="font-medium text-primary-c900">
+                    {`${formatCurrency(minMax[0])} / ${formatCurrency(
+                      minMax[1],
+                    )}`}
+                  </div>
+                </div>
+              </ListItem>
+            ) : null}
 
             {status !== AuctionStatus.AUCTIONING && (
               <ListItem
@@ -349,6 +447,26 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
               </ListItem>
             )}
 
+            {status === AuctionStatus.PROGRESS ||
+            status === AuctionStatus.DELIVERY ||
+            status === AuctionStatus.COMPLETED ? (
+              <ListItem
+                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
+                disablePadding
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold text-grey-c900">
+                    Tiến độ công việc
+                  </div>
+                  <div className="font-medium text-primary-c900">
+                    {auction?.progresses &&
+                      findMaxPercentage(auction?.progresses)}
+                    %
+                  </div>
+                </div>
+              </ListItem>
+            ) : null}
+
             {status === AuctionStatus.PROGRESS && (
               <ListItem
                 className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
@@ -370,26 +488,6 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
                 </div>
               </ListItem>
             )}
-
-            {status === AuctionStatus.PROGRESS ||
-            status === AuctionStatus.DELIVERY ||
-            status === AuctionStatus.COMPLETED ? (
-              <ListItem
-                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
-                disablePadding
-              >
-                <div className="flex flex-col gap-1">
-                  <div className="font-bold text-grey-c900">
-                    Tiến độ công việc
-                  </div>
-                  <div className="font-medium text-primary-c900">
-                    {auction?.progresses &&
-                      findMaxPercentage(auction?.progresses)}
-                    %
-                  </div>
-                </div>
-              </ListItem>
-            ) : null}
           </List>
         </Collapse>
       </div>

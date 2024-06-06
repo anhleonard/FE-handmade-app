@@ -77,6 +77,16 @@ const CancelAuctionModal = ({ auction, handleRefetch }: Props) => {
 
       if (depositValues) {
         resDeposit = await createRefundPayment(depositValues);
+        if (resDeposit?.return_code === 2) {
+          let alert: AlertState = {
+            isOpen: true,
+            title: "LỖI HOÀN TIỀN CỌC",
+            message: resDeposit?.return_message,
+            type: AlertStatus.ERROR,
+          };
+          dispatch(openAlert(alert));
+          return;
+        }
         const params: PaidAuctionValues = {
           auctionId: auction?.id,
           type: "deposit",
@@ -86,6 +96,16 @@ const CancelAuctionModal = ({ auction, handleRefetch }: Props) => {
 
       if (totalValues) {
         resTotal = await createRefundPayment(totalValues);
+        if (resTotal?.return_code === 2) {
+          let alert: AlertState = {
+            isOpen: true,
+            title: "LỖI HOÀN TIỀN",
+            message: resDeposit?.return_message,
+            type: AlertStatus.ERROR,
+          };
+          dispatch(openAlert(alert));
+          return;
+        }
         const params: PaidAuctionValues = {
           auctionId: auction?.id,
           type: "total",
