@@ -22,8 +22,6 @@ export const filterSellerProducts = async (token: string, query: any) => {
 
   const queryString = new URLSearchParams(query).toString();
 
-  console.log(`${headerUrl}/products/filter-seller-products?${queryString}`);
-
   return await axios
     .get(`${headerUrl}/products/filter-seller-products?${queryString}`, config)
     .then((res) => res.data);

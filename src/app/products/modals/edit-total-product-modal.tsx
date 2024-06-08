@@ -1,4 +1,5 @@
 import { headerUrl } from "@/apis/services/authentication";
+import { getCategories } from "@/apis/services/categories";
 import {
   updateProductBySeller,
   updateProductVariants,
@@ -23,7 +24,7 @@ import CateGoriesPicker, {
 } from "@/screens/products/selected-categories";
 import { UploadFile } from "antd";
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 type Props = {
@@ -38,12 +39,13 @@ const EditTotalProductModal = ({
   updateTextButton = "Cập nhật",
 }: Props) => {
   const dispatch = useDispatch();
+  const cateIds = product?.category?.map((cate) => cate.id);
   const [isClassified, setIsClassified] = useState<boolean>(
     product?.isMultipleClasses,
   );
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [labels, setLabels] = useState<Label[]>([]);
-  const [selectedLabels, setSelectedLabels] = useState<number[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<number[]>(cateIds);
 
   const [fixedVariants, setFixedVariants] = useState<UpdateVariant[]>([]);
 
@@ -212,6 +214,7 @@ const EditTotalProductModal = ({
           ...(product?.status === ProductStatus.VIOLATE && {
             status: ProductStatus.PENDING,
           }),
+          categoryId: selectedLabels,
         };
 
         const res = await updateProductBySeller(product.id, params, token);
@@ -233,6 +236,28 @@ const EditTotalProductModal = ({
       dispatch(closeLoading());
     }
   };
+
+  const getAllCategories = async () => {
+    try {
+      dispatch(openLoading());
+      const res = await getCategories();
+      setLabels(res);
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    } finally {
+      dispatch(closeLoading());
+    }
+  };
+
+  useEffect(() => {
+    getAllCategories();
+  }, []);
 
   return (
     <div>
@@ -260,13 +285,13 @@ const EditTotalProductModal = ({
                 isRequired={false}
               />
 
-              {/* <CheckboxesGroup /> */}
-
-              <CateGoriesPicker
-                labels={labels}
-                selectedLabels={selectedLabels}
-                setSelectedLabels={setSelectedLabels}
-              />
+              {labels ? (
+                <CateGoriesPicker
+                  labels={labels}
+                  selectedLabels={selectedLabels}
+                  setSelectedLabels={setSelectedLabels}
+                />
+              ) : null}
 
               <MyTextArea
                 id="description"
