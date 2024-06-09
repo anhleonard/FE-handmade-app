@@ -1,8 +1,9 @@
 import { cancelOrder } from "@/apis/services/orders";
+import { createRefundPayment } from "@/apis/services/payment";
 import storage from "@/apis/storage";
-import { CancelOrderValues } from "@/apis/types";
+import { CancelOrderValues, CreateRefundPaymentValues } from "@/apis/types";
 import { AlertStatus } from "@/enum/constants";
-import { AlertState } from "@/enum/defined-type";
+import { AlertState, Order } from "@/enum/defined-type";
 import Button from "@/libs/button";
 import MyPrimaryTextField from "@/libs/primary-text-field";
 import { openAlert } from "@/redux/slices/alertSlice";
@@ -27,11 +28,11 @@ const reasons = [
 ];
 
 type Props = {
-  orderId: number;
+  order: Order;
   handleRefetch: () => void;
 };
 
-const CancelOrderModal = ({ orderId, handleRefetch }: Props) => {
+const CancelOrderModal = ({ order, handleRefetch }: Props) => {
   const dispatch = useDispatch();
   const [value, setValue] = useState<string>("");
 
@@ -42,12 +43,32 @@ const CancelOrderModal = ({ orderId, handleRefetch }: Props) => {
   const handleCancelOrder = async () => {
     try {
       dispatch(openLoading());
+
+      //create refund for order
+      if (order?.isPaid) {
+        const variables: CreateRefundPaymentValues = {
+          zp_trans_id: order?.zp_trans_id,
+          amount: order.totalPayment,
+        };
+        const res = await createRefundPayment(variables);
+        if (res?.return_code === 2) {
+          let alert: AlertState = {
+            isOpen: true,
+            title: "LỖI",
+            message: "Hoàn tiền không thành công!",
+            type: AlertStatus.ERROR,
+          };
+          dispatch(openAlert(alert));
+          return;
+        }
+      }
+
       const variables: CancelOrderValues = {
         isCanceled: true,
         canceledReason: value,
       };
       const token = storage.getLocalAccessToken();
-      const res = await cancelOrder(orderId, token, variables);
+      const res = await cancelOrder(order?.id, token, variables);
       if (res) {
         dispatch(closeModal());
         let alert: AlertState = {

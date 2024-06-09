@@ -93,6 +93,13 @@ export type CancelAuctionValues = {
   additionalComment: string;
 };
 
+export type ExtendDaysValues = {
+  auctionId?: number;
+  days?: string;
+  comment?: string;
+  isAccepted?: boolean;
+};
+
 //refund money
 export type CreateRefundPaymentValues = {
   zp_trans_id?: string;

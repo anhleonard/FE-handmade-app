@@ -19,6 +19,7 @@ import { closeModal } from "@/redux/slices/modalSlice";
 import { Form, Formik } from "formik";
 import React from "react";
 import { useDispatch } from "react-redux";
+
 type Props = {
   auction: Auction;
   handleRefetch: () => void;

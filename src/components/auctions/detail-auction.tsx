@@ -6,9 +6,10 @@ import {
   findMinMaxBidderMoney,
   formatCommonTime,
   formatCurrency,
+  remainingDaysAfterAccepted,
 } from "@/enum/functions";
 import MyLabel from "@/libs/label";
-import { Collapse, List, ListItem } from "@mui/material";
+import { Alert, Collapse, List, ListItem } from "@mui/material";
 import React from "react";
 import MyDisplayImage from "@/libs/display-image";
 import Button from "@/libs/button";
@@ -24,6 +25,7 @@ import { headerUrl } from "@/apis/services/authentication";
 import CancelAuctionModal from "./modals/cancel-auction-modal";
 import { SCREEN } from "@/enum/setting";
 import { openModal } from "@/redux/slices/modalSlice";
+import ExtendDaysModal from "./modals/extend-days-modal";
 
 type Props = {
   status: AuctionStatus;
@@ -143,6 +145,18 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
     dispatch(openModal(modal));
   };
 
+  const handleOpenExtendModal = () => {
+    const modal = {
+      isOpen: true,
+      title: "Yêu cầu gia hạn",
+      content: (
+        <ExtendDaysModal auction={auction} handleRefetch={handleRefetch} />
+      ),
+      screen: SCREEN.BASE,
+    };
+    dispatch(openModal(modal));
+  };
+
   const renderAuctionStatus = (status: AuctionStatus) => {
     switch (status) {
       case AuctionStatus.AUCTIONING:
@@ -166,7 +180,21 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
+      {bidder?.estimatedDay &&
+      calculateDaysAfterAccepted(bidder?.estimatedDay, bidder?.acceptedAt) ===
+        0 ? (
+        <Alert severity="error" className="font-medium text-support-c500">
+          Đã quá thời gian làm dự án{" "}
+          {bidder?.estimatedDay &&
+            bidder?.acceptedAt &&
+            remainingDaysAfterAccepted(
+              bidder?.estimatedDay,
+              bidder?.acceptedAt,
+            ) * -1}{" "}
+          ngày
+        </Alert>
+      ) : null}
       <div className="rounded-2xl border-l-[2px] border-r-[2px] border-t-[2px] border-grey-c50">
         <ListItem
           className={`rounded-tl-2xl rounded-tr-2xl border-b-[2px] border-grey-c50 bg-white`}
@@ -520,19 +548,31 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
           >
             Hủy dự án
           </Button>
-          <Button
-            className="!w-fit !px-3 !py-1.5 !text-xs !font-medium"
-            color="primary"
-            onClick={() => handleSubmitAuction()}
-          >
-            Dự án đã xong?
-          </Button>
-        </div>
-      )}
-
-      {status === AuctionStatus.PROGRESS && auction?.readyToLaunch && (
-        <div className="mt-4 flex flex-row justify-end">
-          <MyLabel type="success">Đã thông báo tới admin!</MyLabel>
+          {bidder?.estimatedDay &&
+          calculateDaysAfterAccepted(
+            bidder?.estimatedDay,
+            bidder?.acceptedAt,
+          ) === 0 ? (
+            !auction?.addition ? (
+              <Button
+                className="!w-fit !px-3 !py-2 !text-xs !font-medium"
+                color="info"
+                onClick={() => handleOpenExtendModal()}
+              >
+                Yêu cầu gia hạn
+              </Button>
+            ) : (
+              <MyLabel type="success">Đã gửi yêu cầu gia hạn</MyLabel>
+            )
+          ) : (
+            <Button
+              className="!w-fit !px-3 !py-1.5 !text-xs !font-medium"
+              color="primary"
+              onClick={() => handleSubmitAuction()}
+            >
+              Dự án đã xong?
+            </Button>
+          )}
         </div>
       )}
     </div>

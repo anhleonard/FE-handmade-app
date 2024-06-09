@@ -155,13 +155,11 @@ const ProcessingOrdersTable = () => {
     dispatch(openConfirm(confirm));
   };
 
-  const handleOpenCancelModal = (orderId: number) => {
+  const handleOpenCancelModal = (order: Order) => {
     const modal = {
       isOpen: true,
       title: "Lí do hủy đơn hàng",
-      content: (
-        <CancelOrderModal orderId={orderId} handleRefetch={handleRefetch} />
-      ),
+      content: <CancelOrderModal order={order} handleRefetch={handleRefetch} />,
       screen: SCREEN.BASE,
     };
     dispatch(openModal(modal));
@@ -223,24 +221,33 @@ const ProcessingOrdersTable = () => {
             >
               <tr className="hover:bg-secondary-c100 hover:text-grey-c700">
                 <th className="py-4 pl-3">Mã đơn hàng</th>
+                <th className="px-1 py-4">ID</th>
                 <th className="px-1 py-4">Tên khách hàng</th>
                 <th className="px-1 py-4">Trạng thái</th>
                 <th className="px-1 py-4">Số lượng</th>
                 <th className="px-1 py-4">Khách trả</th>
                 <th className="px-1 py-4">Ngày đặt hàng</th>
-                <th className="px-1 py-4">Dự kiến giao hàng</th>
+                <th className="px-1 py-4">Hạn xử lý</th>
                 <th className="px-1 py-4 text-center">Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {orders?.map((order, index) => {
-                if (!order?.orderProducts?.length) return null;
+                // if (!order?.orderProducts?.length) return null;
+
+                //check xem đã quá hạn xử lý chưa
+                const now = Date.now();
+                const processingAt = new Date(order?.processingAt);
+                processingAt.setDate(processingAt.getDate() + 7);
+                const notOverdate = new Date(processingAt).getTime() > now;
+
                 return (
                   <tr
                     className="hover:bg-primary-c100 hover:text-grey-c700"
                     key={index}
                   >
                     <td className="py-4 pl-3">{order?.code}</td>
+                    <td className="px-1 py-4">{order?.id}</td>
                     <td className="px-1 py-4">{order?.client?.name}</td>
                     <td className="px-1 py-4">
                       <MyLabel type="progress">Đang xử lý</MyLabel>
@@ -255,7 +262,7 @@ const ProcessingOrdersTable = () => {
                       {formatCommonTime(order?.orderAt)}
                     </td>
                     <td className="px-1 py-4">
-                      {formatCommonTime(order?.orderAt, 7)}
+                      {formatCommonTime(order?.processingAt, 7)}
                     </td>
                     <td className="px-1 py-4">
                       <div className="flex flex-row items-center justify-center gap-2">
@@ -270,34 +277,49 @@ const ProcessingOrdersTable = () => {
 
                         {!order?.isReadyDelivery ? (
                           <Tooltip title="Sẵn sàng giao hàng">
-                            <div
-                              className="hover:cursor-pointer"
+                            <button
                               onClick={() => handleAlertForAdmin(order?.id)}
+                              disabled={notOverdate ? false : true}
                             >
                               <NotificationsNoneRoundedIcon
-                                sx={{ fontSize: 24, color: COLORS.purple.c700 }}
+                                sx={{
+                                  fontSize: 24,
+                                  color: notOverdate
+                                    ? COLORS.purple.c700
+                                    : COLORS.grey.c300,
+                                }}
                               />
-                            </div>
+                            </button>
                           </Tooltip>
                         ) : (
                           <Tooltip title="Đã thông báo cho admin">
-                            <div className="hover:cursor-pointer">
+                            <button disabled={notOverdate ? false : true}>
                               <CheckCircleOutlineIcon
-                                sx={{ fontSize: 20, color: COLORS.blue.c900 }}
+                                sx={{
+                                  fontSize: 20,
+                                  color: notOverdate
+                                    ? COLORS.blue.c900
+                                    : COLORS.grey.c300,
+                                }}
                               />
-                            </div>
+                            </button>
                           </Tooltip>
                         )}
 
                         <Tooltip title="Hủy đơn hàng">
-                          <div
-                            className="hover:cursor-pointer"
-                            onClick={() => handleOpenCancelModal(order?.id)}
+                          <button
+                            onClick={() => handleOpenCancelModal(order)}
+                            disabled={notOverdate ? false : true}
                           >
                             <DoNotDisturbOnOutlinedIcon
-                              sx={{ fontSize: 20, color: COLORS.support.c500 }}
+                              sx={{
+                                fontSize: 20,
+                                color: notOverdate
+                                  ? COLORS.support.c500
+                                  : COLORS.grey.c300,
+                              }}
                             />
-                          </div>
+                          </button>
                         </Tooltip>
                       </div>
                     </td>

@@ -172,3 +172,24 @@ export function getCurrentUser() {
     return null;
   }
 }
+
+export function remainingDaysAfterAccepted(
+  estimatedDay: number,
+  acceptedAt: Date,
+) {
+  // Chuyển đổi acceptedAt thành đối tượng Date
+  const acceptedDate = new Date(acceptedAt);
+
+  // Lấy ngày hiện tại
+  const currentDate = new Date();
+
+  // Tính ngày kết thúc
+  const endDate = new Date(acceptedDate);
+  endDate.setDate(acceptedDate.getDate() + estimatedDay);
+
+  // Tính số ngày còn lại
+  const remainingTime = endDate.getTime() - currentDate.getTime();
+  const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+
+  return remainingDays;
+}

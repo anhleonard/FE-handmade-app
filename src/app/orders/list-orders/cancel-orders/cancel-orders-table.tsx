@@ -47,7 +47,6 @@ const CancelOrdersTable = () => {
   const [count, setCount] = useState(0);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<Item>(labelOptions[0]);
-  const [orderAt, setOrderAt] = useState<string>("");
 
   const getAllOrders = async () => {
     try {
@@ -65,9 +64,6 @@ const CancelOrdersTable = () => {
           searchText !== "" && {
             clientName: searchText,
           }),
-        ...(orderAt !== "" && {
-          orderAt: orderAt,
-        }),
       });
       if (res) {
         setCount(res?.total ?? 0);
@@ -88,7 +84,7 @@ const CancelOrdersTable = () => {
 
   useEffect(() => {
     getAllOrders();
-  }, [refetchQueries, page, rowsPage, orderAt]);
+  }, [refetchQueries, page, rowsPage]);
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -151,24 +147,6 @@ const CancelOrdersTable = () => {
             />
           </form>
         </div>
-        <div className="flex flex-row items-center justify-center gap-4">
-          <div>Ngày đặt hàng</div>
-
-          <div className="flex flex-row items-center gap-1">
-            <MyDatePicker
-              id="order-at"
-              name="order-at"
-              className="flex-1"
-              onChange={(value) => setOrderAt(value[0].toString())}
-            />
-
-            {orderAt !== "" ? (
-              <IconButton onClick={() => setOrderAt("")}>
-                <ClearRoundedIcon style={{ width: 16, height: 16 }} />
-              </IconButton>
-            ) : null}
-          </div>
-        </div>
       </div>
 
       {/* table */}
@@ -191,7 +169,7 @@ const CancelOrdersTable = () => {
             </thead>
             <tbody>
               {orders?.map((order, index) => {
-                if (!order?.orderProducts?.length) return null;
+                // if (!order?.orderProducts?.length) return null;
                 return (
                   <tr
                     key={index}

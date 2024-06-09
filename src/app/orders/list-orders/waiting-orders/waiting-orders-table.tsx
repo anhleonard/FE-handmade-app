@@ -157,13 +157,11 @@ const WaitingOrdersTable = () => {
     dispatch(openConfirm(confirm));
   };
 
-  const handleOpenCancelModal = (orderId: number) => {
+  const handleOpenCancelModal = (order: Order) => {
     const modal = {
       isOpen: true,
       title: "Lí do hủy đơn hàng",
-      content: (
-        <CancelOrderModal orderId={orderId} handleRefetch={handleRefetch} />
-      ),
+      content: <CancelOrderModal order={order} handleRefetch={handleRefetch} />,
       screen: SCREEN.BASE,
     };
     dispatch(openModal(modal));
@@ -237,6 +235,13 @@ const WaitingOrdersTable = () => {
             <tbody>
               {orders?.map((order, index) => {
                 // if (!order?.orderProducts?.length) return null;
+
+                //check xem đã quá hạn xác nhận chưa
+                const now = Date.now();
+                const orderAt = new Date(order?.orderAt);
+                orderAt.setDate(orderAt.getDate() + 7);
+                const notOverdate = new Date(orderAt).getTime() > now;
+
                 return (
                   <tr
                     key={index}
@@ -245,7 +250,11 @@ const WaitingOrdersTable = () => {
                     <td className="py-4 pl-3">{order?.code}</td>
                     <td className="px-1 py-4">{order?.client?.name}</td>
                     <td className="px-1 py-4">
-                      <MyLabel type="warning">Chờ xác nhận</MyLabel>
+                      {notOverdate ? (
+                        <MyLabel type="warning">Chờ xác nhận</MyLabel>
+                      ) : (
+                        <MyLabel type="error">Quá hạn xác nhận</MyLabel>
+                      )}
                     </td>
                     <td className="px-1 py-4">
                       {order?.orderProducts?.length}
@@ -269,25 +278,35 @@ const WaitingOrdersTable = () => {
                             <DetailIcon />
                           </div>
                         </Tooltip>
-                        <Tooltip title="Xác nhận">
-                          <div
-                            className="hover:cursor-pointer"
+                        <Tooltip title={`${notOverdate ? "Xác nhận" : ""}`}>
+                          <button
                             onClick={() => handleConfirmOrder(order?.id)}
+                            disabled={notOverdate ? false : true}
                           >
                             <CheckCircleOutlineIcon
-                              sx={{ fontSize: 20, color: COLORS.blue.c900 }}
+                              sx={{
+                                fontSize: 20,
+                                color: notOverdate
+                                  ? COLORS.blue.c900
+                                  : COLORS.grey.c300,
+                              }}
                             />
-                          </div>
+                          </button>
                         </Tooltip>
-                        <Tooltip title="Từ chối">
-                          <div
-                            className="hover:cursor-pointer"
-                            onClick={() => handleOpenCancelModal(order?.id)}
+                        <Tooltip title={`${notOverdate ? "Từ chối" : ""}`}>
+                          <button
+                            onClick={() => handleOpenCancelModal(order)}
+                            disabled={notOverdate ? false : true}
                           >
                             <DoNotDisturbOnOutlinedIcon
-                              sx={{ fontSize: 20, color: COLORS.support.c500 }}
+                              sx={{
+                                fontSize: 20,
+                                color: notOverdate
+                                  ? COLORS.support.c500
+                                  : COLORS.grey.c300,
+                              }}
                             />
-                          </div>
+                          </button>
                         </Tooltip>
                       </div>
                     </td>

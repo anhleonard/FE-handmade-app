@@ -5,6 +5,8 @@ import { Alert, Snackbar } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+type Severity = "error" | "success" | "info" | "warning" | undefined;
+
 const AlertModal = () => {
   const dispatch = useDispatch();
   const alertData = useSelector((state: RootState) => state.alert);
@@ -16,14 +18,14 @@ const AlertModal = () => {
   return (
     <Snackbar
       open={alertData.isOpen}
-      autoHideDuration={50000000}
+      autoHideDuration={6000}
       onClose={handleCloseAlert}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       className="z-[500000]"
     >
       {alertData.isOpen ? (
         <Alert
-          severity={alertData.type}
+          severity={alertData.type as Severity}
           onClose={handleCloseAlert}
           sx={{
             minWidth: "400px",

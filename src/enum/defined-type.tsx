@@ -211,6 +211,8 @@ export type Order = {
   client: User;
   updatedBy: User;
   isReadyDelivery: boolean;
+  zp_trans_id: string;
+  amount: number;
 };
 
 export type User = {
@@ -253,6 +255,7 @@ export type Auction = {
   progresses: Progress[];
   canceledBy: User;
   paids: PaidAuction[];
+  addition: Addition;
 };
 
 export type Bidder = {
@@ -272,6 +275,13 @@ export type Progress = {
   createdAt: Date;
   updatedAt: Date;
   user: User;
+};
+
+export type Addition = {
+  id: number;
+  days: number;
+  comment: string;
+  isAccepted: boolean;
 };
 
 // ID CARDS

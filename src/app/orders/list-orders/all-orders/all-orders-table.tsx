@@ -20,7 +20,7 @@ import {
   rowsPerPage,
 } from "@/enum/constants";
 import { openAlert } from "@/redux/slices/alertSlice";
-import { formatCommonTime } from "@/enum/functions";
+import { formatCommonTime, formatCurrency } from "@/enum/functions";
 import { RootState } from "@/redux/store";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { MyPagination } from "@/libs/pagination";
@@ -208,7 +208,9 @@ const AllOrdersTable = () => {
                     <td className="px-1 py-4">
                       {order?.orderProducts?.length}
                     </td>
-                    <td className="px-1 py-4">{order?.totalPayment}</td>
+                    <td className="px-1 py-4">
+                      {formatCurrency(order?.totalPayment)}
+                    </td>
                     <td className="px-1 py-4">
                       {formatCommonTime(order?.orderAt)}
                     </td>
