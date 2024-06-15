@@ -33,6 +33,7 @@ const SetUpStorePage = () => {
     name: "",
     mainBusiness: "",
     description: "",
+    address: "",
     avatar: "",
     frontCard: cardData?.frontCard as string,
     backCard: cardData?.backCard as string,
@@ -65,6 +66,7 @@ const SetUpStorePage = () => {
           name: values.name,
           mainBusiness: values.mainBusiness,
           description: values.description,
+          address: values.address,
           avatar: file,
         };
 
@@ -125,6 +127,13 @@ const SetUpStorePage = () => {
                 name="description"
                 placeholder="Nhập mô tả cho cửa hàng của bạn"
                 value={formik.values.description}
+                onChange={formik.handleChange}
+              />
+              <MyTextField
+                id="address"
+                name="address"
+                placeholder="Địa chỉ cửa hàng"
+                value={formik.values.address}
                 onChange={formik.handleChange}
               />
               <div className="flex items-center justify-center">

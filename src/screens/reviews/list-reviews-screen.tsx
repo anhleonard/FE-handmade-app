@@ -1,6 +1,6 @@
 "use client";
 import { COLORS } from "@/enum/colors";
-import { orderTabs, productTabs, reviewTabs } from "@/enum/constants";
+import { reviewTabs } from "@/enum/constants";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Box, Tab } from "@mui/material";
 import { useState } from "react";
@@ -25,7 +25,6 @@ const ListReviewsScreen = () => {
                 <TabList
                   onChange={handleChange}
                   aria-label="product-screen-tabs"
-                  sx={{}}
                   TabIndicatorProps={{
                     sx: {
                       backgroundColor: COLORS.primary.c900,
@@ -33,9 +32,10 @@ const ListReviewsScreen = () => {
                     },
                   }}
                 >
-                  {reviewTabs.map((item) => {
+                  {reviewTabs.map((item, index) => {
                     return (
                       <Tab
+                        key={index}
                         label={item.label}
                         value={item.value}
                         sx={{
@@ -52,9 +52,9 @@ const ListReviewsScreen = () => {
                   })}
                 </TabList>
               </Box>
-              {reviewTabs.map((item) => {
+              {reviewTabs.map((item, index) => {
                 return (
-                  <TabPanel value={item.value}>
+                  <TabPanel key={index} value={item.value}>
                     <div className="my-8">{item.content}</div>
                   </TabPanel>
                 );

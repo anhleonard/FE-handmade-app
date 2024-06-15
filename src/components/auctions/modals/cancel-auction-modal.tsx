@@ -139,6 +139,7 @@ const CancelAuctionModal = ({ auction, handleRefetch }: Props) => {
       dispatch(closeLoading());
     }
   };
+
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit}>
       {(formik) => (

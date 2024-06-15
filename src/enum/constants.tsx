@@ -27,11 +27,25 @@ import ProcessingAuctionsTab from "@/app/auctions/my-auctions/processing-auction
 import FinishedAuctionsTab from "@/app/auctions/my-auctions/finished-auctions/finished-auctions-table";
 import CanceledAuctionsTab from "@/app/auctions/my-auctions/canceled-auctions/canceled-auctions-table";
 import { FilterTime } from "./defined-type";
-import StoreProfile from "@/app/(profile)/store-profile/page";
+// import StoreProfile from "@/app/(profile)/store-profile/page";
 import EditSellerModal from "@/components/profile/edit-seller-modal";
-import SellerProfile from "@/app/(profile)/seller-profile/page";
+// import SellerProfile from "@/app/(profile)/seller-profile/page";
 import DeliveryAuctionsTab from "@/app/auctions/my-auctions/delivery-auctions/delivery-auctions-table";
 import WaitingAuctionsTab from "@/app/auctions/my-auctions/waiting-auctions/waiting-auctions-table";
+import dynamic from "next/dynamic";
+const SellerProfile = dynamic(
+  () => {
+    return import("@/app/(profile)/seller-profile/page");
+  },
+  { ssr: false },
+);
+
+const StoreProfile = dynamic(
+  () => {
+    return import("@/app/(profile)/store-profile/page");
+  },
+  { ssr: false },
+);
 
 export const Page = 1;
 export const Limit = 5;

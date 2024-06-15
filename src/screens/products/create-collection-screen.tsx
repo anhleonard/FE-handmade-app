@@ -255,7 +255,8 @@ const CreateCollectionScreen = () => {
               <div className="flex flex-col gap-1 text-grey-c800">
                 <div className="font-bold">Tự chọn</div>
                 <div>
-                  Bạn tự chọn sản phẩm để thêm vào bộ sưu tập và bấm "Thêm mới"
+                  Bạn tự chọn sản phẩm để thêm vào bộ sưu tập và bấm{" "}
+                  {`"Thêm mới"`}
                   bên dưới để hoàn tất
                 </div>
               </div>

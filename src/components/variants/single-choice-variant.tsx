@@ -62,7 +62,7 @@ const SingleChoiceVariant = ({
     <div
       className={`flex flex-col gap-4 ${variants.length - 1 != index && "border-b-2 border-dashed border-grey-c100 pb-8"}`}
     >
-      <MyLabel children={`Phân loại ${index + 1}`} type="warning" />
+      <MyLabel type="warning">{`Phân loại ${index + 1}`}</MyLabel>
       <MyPrimaryTextField
         id={`${variant.id}`}
         title="Tên phân loại"

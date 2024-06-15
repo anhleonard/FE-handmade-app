@@ -1,6 +1,6 @@
 import FormatEndCurrencyIcon from "@/libs/format-end-currency-icon";
 import MyTextField from "@/libs/text-field";
-import React, { useState } from "react";
+import React from "react";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { COLORS } from "@/enum/colors";
 import Button from "@/libs/button";
@@ -8,14 +8,13 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import MyTextArea from "@/libs/text-area";
 import { useDispatch } from "react-redux";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
-import { createBidder, singleAuction } from "@/apis/services/auctions";
-import { AlertStatus, AuctionStatus } from "@/enum/constants";
+import { createBidder } from "@/apis/services/auctions";
+import { AlertStatus } from "@/enum/constants";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { AlertState, Auction } from "@/enum/defined-type";
 import storage from "@/apis/storage";
 import { CreateBidderValues } from "@/apis/types";
 import { Form, Formik } from "formik";
-import { refetchComponent } from "@/redux/slices/refetchSlice";
 
 const benefits = [
   "Đặt giá và khung giờ theo ý của bạn",
@@ -158,8 +157,8 @@ const SellerAuctionInformation = ({ auction, handleRefetch }: Props) => {
         <div className="font-bold text-grey-c900">
           Lợi ích của việc đặt giá trên Handmade
         </div>
-        {benefits.map((benefit: string) => (
-          <div className="flex flex-row items-center gap-2">
+        {benefits.map((benefit: string, index) => (
+          <div key={index} className="flex flex-row items-center gap-2">
             <CheckCircleRoundedIcon
               sx={{ fontSize: 20, color: COLORS.primary.c900 }}
             />

@@ -29,9 +29,12 @@ const MyRadioGroup: React.FC<MyRadioGroupProps> = ({
         ) : null}
       </label>
       <div className="flex flex-row items-center gap-6">
-        {options?.map((item: RadioItem) => {
+        {options?.map((item: RadioItem, index) => {
           return (
-            <label className="flex cursor-pointer select-none items-center">
+            <label
+              key={index}
+              className="flex cursor-pointer select-none items-center"
+            >
               <div className="relative text-grey-c900">
                 <input
                   type="radio"

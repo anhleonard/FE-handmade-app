@@ -1,3 +1,5 @@
+"use client";
+import React, { useEffect, useState } from "react";
 import { headerUrl } from "@/apis/services/authentication";
 import { singleStore } from "@/apis/services/stores";
 import storage from "@/apis/storage";
@@ -10,7 +12,6 @@ import { openAlert } from "@/redux/slices/alertSlice";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
 import { openModal } from "@/redux/slices/modalSlice";
 import { Avatar } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { RootState } from "@/redux/store";
@@ -19,10 +20,6 @@ const StoreProfile = () => {
   const dispatch = useDispatch();
   const [store, setStore] = useState<Store>();
   const refetchQueries = useSelector((state: RootState) => state.refetch.time);
-
-  const handleRefetch = () => {
-    dispatch(refetchComponent());
-  };
 
   const getSingleStore = async () => {
     try {
@@ -45,20 +42,24 @@ const StoreProfile = () => {
     }
   };
 
+  const handleRefetch = () => {
+    dispatch(refetchComponent());
+  };
+
   useEffect(() => {
     getSingleStore();
   }, [refetchQueries]);
 
   const handleOpenEditModal = () => {
-    const modal = {
-      isOpen: true,
-      title: "Chỉnh sửa thông tin",
-      content: store && (
-        <EditStoreModal store={store} handleRefetch={handleRefetch} />
-      ),
-      screen: SCREEN.BASE,
-    };
-    dispatch(openModal(modal));
+    if (store && handleRefetch) {
+      const modal = {
+        isOpen: true,
+        title: "Chỉnh sửa thông tin",
+        content: <EditStoreModal store={store} handleRefetch={handleRefetch} />,
+        screen: SCREEN.BASE,
+      };
+      dispatch(openModal(modal));
+    }
   };
 
   return (

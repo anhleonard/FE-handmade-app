@@ -30,9 +30,10 @@ const MyAuctionsScreen = ({ value = "1", handleChange }: Props) => {
                     },
                   }}
                 >
-                  {sellerAuctionTabs.map((item) => {
+                  {sellerAuctionTabs.map((item, index) => {
                     return (
                       <Tab
+                        key={index}
                         label={item.label}
                         value={item.value}
                         sx={{
@@ -49,9 +50,9 @@ const MyAuctionsScreen = ({ value = "1", handleChange }: Props) => {
                   })}
                 </TabList>
               </Box>
-              {sellerAuctionTabs.map((item) => {
+              {sellerAuctionTabs.map((item, index) => {
                 return (
-                  <TabPanel value={item.value}>
+                  <TabPanel key={index} value={item.value}>
                     <div className="my-8">{item.content}</div>
                   </TabPanel>
                 );

@@ -97,9 +97,10 @@ const ListVouchersScreen = () => {
                     },
                   }}
                 >
-                  {voucherTabs.map((item) => {
+                  {voucherTabs.map((item, index) => {
                     return (
                       <Tab
+                        key={index}
                         label={item.label}
                         value={item.value}
                         sx={{
@@ -116,9 +117,9 @@ const ListVouchersScreen = () => {
                   })}
                 </TabList>
               </Box>
-              {voucherTabs.map((item) => {
+              {voucherTabs.map((item, index) => {
                 return (
-                  <TabPanel value={item.value}>
+                  <TabPanel key={index} value={item.value}>
                     <div className="my-8">{item.content}</div>
                   </TabPanel>
                 );

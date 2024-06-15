@@ -3,7 +3,6 @@ import {
   updateProductBySeller,
   updateProductVariants,
 } from "@/apis/services/product";
-import ClassifiedTable from "@/components/products/classified-table";
 import { AlertStatus, ProductStatus } from "@/enum/constants";
 import { AlertState, Product, Variant } from "@/enum/defined-type";
 import Button from "@/libs/button";
@@ -12,15 +11,10 @@ import SwitchButton from "@/libs/switch-button";
 import MyTextField from "@/libs/text-field";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import * as yup from "yup";
 import { Form, Formik, getIn } from "formik";
 import FormatEndCurrencyIcon from "@/libs/format-end-currency-icon";
-import BuildClassificationsModal from "@/components/products/build-classifications";
-import MyLabel from "@/libs/label";
-import MyTextAction from "@/libs/text-action";
-import { COLORS } from "@/enum/colors";
 import UpdateClassifications from "@/components/products/update-classifications";
 import { Chip } from "@mui/material";
 import { formatVariant } from "@/enum/functions";

@@ -47,6 +47,7 @@ export type CreateStoreValues = {
   sellerId: number;
   name: string;
   avatar: string;
+  address: string;
   description: string;
   mainBusiness: string;
   frontCard: string;

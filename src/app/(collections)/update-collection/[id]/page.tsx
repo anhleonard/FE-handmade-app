@@ -1,6 +1,6 @@
 "use client";
 import MyTextField from "@/libs/text-field";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AlertState, Collection, Product } from "@/enum/defined-type";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
@@ -20,11 +20,8 @@ import {
 } from "@mui/material";
 import { headerUrl } from "@/apis/services/authentication";
 import { formatCurrency } from "@/enum/functions";
-import {
-  addProductCollection,
-  updateCollection,
-} from "@/apis/services/collections";
-import { CreateCollectionValues, UpdateCollectionValues } from "@/apis/types";
+import { updateCollection } from "@/apis/services/collections";
+import { UpdateCollectionValues } from "@/apis/types";
 import { closeModal } from "@/redux/slices/modalSlice";
 
 function not(a: readonly number[], b: readonly number[]) {
@@ -247,7 +244,8 @@ const UpdateCollectionModal = ({
               <div className="flex flex-col gap-1 text-grey-c800">
                 <div className="font-bold">Tự chọn</div>
                 <div>
-                  Bạn tự chọn sản phẩm để thêm vào bộ sưu tập và bấm "Thêm mới"
+                  Bạn tự chọn sản phẩm để thêm vào bộ sưu tập và bấm{" "}
+                  {`"Thêm mới"`}
                   bên dưới để hoàn tất
                 </div>
               </div>

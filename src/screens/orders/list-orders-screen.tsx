@@ -33,9 +33,10 @@ const ListOrdersScreen = () => {
                     },
                   }}
                 >
-                  {orderTabs.map((order) => {
+                  {orderTabs.map((order, index) => {
                     return (
                       <Tab
+                        key={index}
                         label={order.label}
                         value={order.value}
                         sx={{
@@ -52,9 +53,9 @@ const ListOrdersScreen = () => {
                   })}
                 </TabList>
               </Box>
-              {orderTabs.map((order) => {
+              {orderTabs.map((order, index) => {
                 return (
-                  <TabPanel value={order.value}>
+                  <TabPanel key={index} value={order.value}>
                     <div className="my-8">{order.content}</div>
                   </TabPanel>
                 );

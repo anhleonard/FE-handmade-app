@@ -1,3 +1,4 @@
+"use client";
 import { updateSeller } from "@/apis/services/users";
 import storage from "@/apis/storage";
 import { UpdateSellerValues } from "@/apis/types";

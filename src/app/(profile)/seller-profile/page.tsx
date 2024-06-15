@@ -1,7 +1,6 @@
-import { headerUrl } from "@/apis/services/authentication";
+"use client";
 import { singleStore } from "@/apis/services/stores";
 import storage from "@/apis/storage";
-import EditStoreModal from "@/components/profile/edit-store-modal";
 import { AlertStatus } from "@/enum/constants";
 import { AlertState, Store, User } from "@/enum/defined-type";
 import { SCREEN } from "@/enum/setting";
@@ -9,7 +8,6 @@ import Button from "@/libs/button";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
 import { openModal } from "@/redux/slices/modalSlice";
-import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
@@ -21,10 +19,6 @@ const SellerProfile = () => {
   const [seller, setSeller] = useState<User>();
   const refetchQueries = useSelector((state: RootState) => state.refetch.time);
 
-  const handleRefetch = () => {
-    dispatch(refetchComponent());
-  };
-
   const getSingleStore = async () => {
     try {
       dispatch(openLoading());
@@ -34,7 +28,7 @@ const SellerProfile = () => {
         setSeller(res?.owner);
       }
     } catch (error: any) {
-      let alert: AlertState = {
+      const alert: AlertState = {
         isOpen: true,
         title: "LỖI",
         message: error?.response?.data?.message,
@@ -46,20 +40,26 @@ const SellerProfile = () => {
     }
   };
 
+  const handleRefetch = () => {
+    dispatch(refetchComponent());
+  };
+
   useEffect(() => {
     getSingleStore();
   }, [refetchQueries]);
 
   const handleOpenEditModal = () => {
-    const modal = {
-      isOpen: true,
-      title: "Chỉnh sửa thông tin",
-      content: seller && (
-        <EditSellerModal seller={seller} handleRefetch={handleRefetch} />
-      ),
-      screen: SCREEN.BASE,
-    };
-    dispatch(openModal(modal));
+    if (seller && handleRefetch) {
+      const modal = {
+        isOpen: true,
+        title: "Chỉnh sửa thông tin",
+        content: (
+          <EditSellerModal seller={seller} handleRefetch={handleRefetch} />
+        ),
+        screen: SCREEN.BASE,
+      };
+      dispatch(openModal(modal));
+    }
   };
 
   return (

@@ -424,7 +424,6 @@ const CreateProductScreen = () => {
                   </div>
                 </div>
               )}
-              {/* {isClassified && <ClassifiedTable />} */}
               {isClassified && (
                 <div className={`flex flex-col ${variants?.length && "gap-4"}`}>
                   <Button
@@ -442,6 +441,7 @@ const CreateProductScreen = () => {
                       const result = names.join(" - ");
                       return (
                         <Chip
+                          key={index}
                           label={result}
                           onDelete={() =>
                             handleDeleteVariantItem(variant?.id, index)

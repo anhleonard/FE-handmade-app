@@ -1,3 +1,4 @@
+"use client";
 import { headerUrl } from "@/apis/services/authentication";
 import { UpdateStoreValues } from "@/apis/types";
 import { AlertState, Store } from "@/enum/defined-type";

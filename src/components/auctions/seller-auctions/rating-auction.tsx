@@ -44,9 +44,9 @@ const RatingAuction = ({ type = "client" }: RatingAuctionProps) => {
             readOnly
           />
           <div className="text-justify text-sm text-grey-c900">
-            Ratings provide insight regarding others' opinions and experiences,
+            Ratings provide insight regarding others opinions and experiences,
             and can allow the user to submit a rating of their own. Ratings
-            provide insight regarding others' opinions and experiences, and can
+            provide insight regarding others opinions and experiences, and can
             allow the user to submit a rating of their own.
           </div>
         </>

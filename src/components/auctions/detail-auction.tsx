@@ -41,6 +41,18 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
     ? findMinMaxBidderMoney(auction?.candidates)
     : [0, 0];
 
+  const handleConfirmSubmit = () => {
+    const confirm: any = {
+      isOpen: true,
+      title: "XÁC NHẬN HOÀN THÀNH DỰ ÁN",
+      message: "Bạn có chắc chắn đã hoàn thành dự án này chưa?",
+      feature: "CONFIRM_CONTACT_US",
+      onConfirm: async () => handleSubmitAuction(),
+    };
+
+    dispatch(openConfirm(confirm));
+  };
+
   const handleSubmitAuction = async () => {
     const maxPercentage = findMaxPercentage(auction?.progresses);
     if (maxPercentage !== 100) {
@@ -62,6 +74,7 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
       };
       const res = await updateAuction(auction.id, variables, token);
       if (res) {
+        dispatch(closeConfirm());
         let alert: AlertState = {
           isOpen: true,
           title: "THÀNH CÔNG",
@@ -568,7 +581,7 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
             <Button
               className="!w-fit !px-3 !py-1.5 !text-xs !font-medium"
               color="primary"
-              onClick={() => handleSubmitAuction()}
+              onClick={() => handleConfirmSubmit()}
             >
               Dự án đã xong?
             </Button>

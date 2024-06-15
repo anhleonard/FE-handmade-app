@@ -19,6 +19,7 @@ import InactiveStorePage from "../stores/inactive-store";
 import { closeSideBar, openSideBar } from "@/redux/slices/sidebarSlice";
 import { RootState } from "@/redux/store";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
+import { addStore } from "@/redux/slices/storeSlice";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const HomePage: React.FC = () => {
       const token = storage.getLocalAccessToken();
       const res: Store = await singleStore(token);
       if (res) {
+        dispatch(addStore({ name: res?.name }));
         setStore(res);
       }
     } catch (error: any) {

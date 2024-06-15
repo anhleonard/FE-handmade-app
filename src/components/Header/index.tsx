@@ -1,15 +1,16 @@
 import Link from "next/link";
-import DarkModeSwitcher from "./DarkModeSwitcher";
-import DropdownMessage from "./DropdownMessage";
-import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./dropdown-user";
 import Image from "next/image";
 import StorefrontIcon from "@mui/icons-material/Storefront";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+  const store = useSelector((state: RootState) => state.store);
+
   return (
     <header className="sticky top-0 z-[999] flex h-[75px] w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
       <div className="2xl:px-11 flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6">
@@ -70,25 +71,11 @@ const Header = (props: {
         <div className="hidden sm:block">
           <div className="flex items-center gap-2">
             <StorefrontIcon />
-            <div className="font-semibold uppercase">Tiệm nhà len</div>
+            <div className="font-semibold uppercase">{store?.name}</div>
           </div>
         </div>
 
         <div className="2xsm:gap-7 flex items-center gap-3">
-          <ul className="2xsm:gap-4 flex items-center gap-2">
-            {/* <!-- Dark Mode Toggler --> */}
-            <DarkModeSwitcher />
-            {/* <!-- Dark Mode Toggler --> */}
-
-            {/* <!-- Notification Menu Area --> */}
-            <DropdownNotification />
-            {/* <!-- Notification Menu Area --> */}
-
-            {/* <!-- Chat Notification Area --> */}
-            <DropdownMessage />
-            {/* <!-- Chat Notification Area --> */}
-          </ul>
-
           {/* <!-- User Area --> */}
           <DropdownUser />
           {/* <!-- User Area --> */}

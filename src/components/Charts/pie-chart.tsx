@@ -142,15 +142,13 @@ const PieChart: React.FC = () => {
         </div>
       </div>
 
-      <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
+      <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-4">
         {bestProducts?.map((product, index) => {
           return (
             <div className="w-full px-8" key={index}>
-              <div className="flex w-full items-center">
-                <div
-                  className={`mr-2 block h-3 w-full max-w-3 rounded-full ${index === 4 && "bg-[#247BA0]"} ${index === 0 ? "bg-[#3C50E0]" : `bg-[${colors[index]}]`}`}
-                ></div>
-                <div className="flex w-full justify-between gap-2 text-sm font-medium text-black dark:text-white">
+              <div className="flex w-full items-start gap-2 text-sm font-medium text-black">
+                <div>{index + 1}</div>
+                <div className="flex w-full justify-between gap-2 dark:text-white">
                   <div>{product?.productName}</div>
                   <div>
                     {calculatePercentageForProduct(bestProducts, product)}%{" "}
