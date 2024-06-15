@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import MyPrimaryTextField from "@/libs/primary-text-field";
 import Button from "@/libs/button";
@@ -117,12 +116,12 @@ const SignIn = () => {
                     getIn(formik.errors, "password")
                   }
                 />
-                <Link
+                {/* <Link
                   href={"/forgot-pass"}
                   className="text-xs font-medium text-grey-c700 underline"
                 >
                   Quên mật khẩu?
-                </Link>
+                </Link> */}
               </div>
 
               <div className="flex flex-col items-end gap-2 pt-2">
