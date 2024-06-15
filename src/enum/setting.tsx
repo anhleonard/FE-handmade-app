@@ -82,7 +82,7 @@ export enum TextColor {
 
   SUCCESS_900 = "text-success-c900",
   SUCCESS_800 = "text-success-c800",
-  SSUCCESS_700 = "text-success-c700",
+  SUCCESS_700 = "text-success-c700",
   SUCCESS_600 = "text-success-c600",
   SUCCESS_500 = "text-success-c500",
   SUCCESS_400 = "text-success-c400",
@@ -138,6 +138,9 @@ export enum BgColor {
   SUPPORT_400 = "bg-support-c400",
   SUPPORT_300 = "bg-support-c300",
   SUPPORT_200 = "bg-support-c200",
+  SUPPORT_100 = "bg-support-c100",
+  SUPPORT_50 = "bg-support-c50",
+  SUPPORT_10 = "bg-support-c10",
 
   SUCCESS_900 = "bg-success-c900",
   SUCCESS_800 = "bg-success-c800",

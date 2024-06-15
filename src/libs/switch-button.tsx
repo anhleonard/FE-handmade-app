@@ -7,6 +7,8 @@ interface SwitchButtonProps {
   checked: boolean;
   handleClickSwitchButton: () => void;
   name?: any;
+  title?: string;
+  isRequired?: boolean;
 }
 
 const SwitchButton: React.FC<SwitchButtonProps> = ({
@@ -14,9 +16,19 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({
   checked,
   handleClickSwitchButton,
   name,
+  title,
+  isRequired = false,
 }) => {
   return (
-    <>
+    <div className="">
+      {title ? (
+        <label className="mb-1 block text-sm font-medium text-grey-c600 dark:text-white">
+          {title}
+          {isRequired ? (
+            <span className="text-base text-support-c500"> *</span>
+          ) : null}
+        </label>
+      ) : null}
       <label
         className={`relative select-none ${!disabled ? "cursor-pointer" : "cursor-auto"}`}
       >
@@ -42,7 +54,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({
           ></span>
         </span>
       </label>
-    </>
+    </div>
   );
 };
 

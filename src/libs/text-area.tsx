@@ -1,10 +1,9 @@
 "use client";
-
-import { useState } from "react";
 import MyIcon from "./my-icon";
 
 interface MyTextAreaProps {
   id: string;
+  name?: string;
   title?: string;
   placeholder?: string;
   isRequired?: boolean;
@@ -16,14 +15,16 @@ interface MyTextAreaProps {
   width?: string;
   value?: string | number;
   defaultValue?: string | number;
-  onChange?: (value: string | number) => void;
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement & HTMLInputElement>;
+  rows?: number;
 }
 
 const MyTextArea: React.FC<MyTextAreaProps> = ({
   id,
+  name,
   title,
   placeholder,
-  isRequired = true,
+  isRequired = false,
   type = "text",
   disabled = false,
   disabledText = null,
@@ -32,7 +33,8 @@ const MyTextArea: React.FC<MyTextAreaProps> = ({
   width = "w-full",
   value,
   defaultValue,
-  onChange,
+  onChange = () => null,
+  rows = 3,
 }) => {
   return (
     <div className={`${width}`}>
@@ -44,19 +46,15 @@ const MyTextArea: React.FC<MyTextAreaProps> = ({
           ) : null}
         </label>
         <textarea
-          name={id}
           id={id}
-          rows={3}
+          name={name}
+          rows={rows}
           placeholder={placeholder}
-          onChange={(e) => {
-            if (onChange) {
-              onChange(e.target.value);
-            }
-          }}
+          onChange={onChange}
           value={value}
           defaultValue={defaultValue}
           disabled={disabled}
-          className={`dark:focus:border-primary flex w-full items-center justify-between gap-1 rounded-2xl border-[2px] border-grey-c50 px-3 py-2 text-base font-normal text-grey-c900 placeholder-grey-c200 outline-none transition hover:border-primary-c200 focus:border-primary-c400 active:border-primary-c400 ${disabled ? "cursor-default border-grey-c200 bg-grey-c100 text-grey-c500" : ""}  dark:border-form-strokedark dark:bg-form-input dark:text-white ${isError ? "border-support-c500 bg-support-c10 text-support-c500 placeholder-support-c200" : ""}`}
+          className={`dark:focus:border-primary flex w-full items-center justify-between gap-1 rounded-2xl border-[2px] border-grey-c50 px-3 py-2 text-base font-normal text-grey-c900 placeholder-grey-c200 outline-none transition hover:border-primary-c200 focus:border-primary-c400 disabled:cursor-default disabled:border-grey-c200 disabled:bg-grey-c100 disabled:text-grey-c700 disabled:placeholder-grey-c500  dark:border-form-strokedark dark:bg-form-input dark:text-white ${isError ? "border-support-c500 bg-support-c10 !font-medium text-support-c500 placeholder-support-c200 hover:border-support-c500 focus:border-support-c500" : ""}`}
         ></textarea>
       </div>
       {(isError && helperText) || (disabled && disabledText) ? (

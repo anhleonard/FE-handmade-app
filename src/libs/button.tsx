@@ -10,7 +10,8 @@ type Props = {
   type?: "submit" | "button" | "reset";
   variant?: "outline" | "contained" | "other";
   fullWidth?: boolean;
-  color?: "primary" | "secondary" | "warning" | "error" | "info";
+  color?: "primary" | "secondary" | "error" | "info" | "grey" | "black";
+  size?: "small" | "normal" | "large";
   disabled?: boolean;
 };
 
@@ -29,54 +30,22 @@ const Button = forwardRef<
     fullWidth = false,
     disabled,
     color = "primary",
+    size = "normal",
     ...args
   },
   ref,
 ) {
   const colorAttitude = useMemo(() => {
     return {
-      error: `
-                ${BgColor.SUPPORT_900}
-                ${TextColor.WHITE}      
-                ${HOVER.BgColor.SUPPORT}
-                ${HOVER.BorderColor.SUPPORT}
-                ${FOCUS.BorderColor.SUPPORT}
-                ${BorderColor.SUPPORT_900}
-                `,
-      secondary: `
-      ${BgColor.SECONDARY_900}
-      ${TextColor.WHITE}
-      ${HOVER.BgColor.SECONDARY}
-      ${HOVER.BorderColor.SECONDARY}
-      ${FOCUS.BorderColor.SECONDARY}
-      ${BorderColor.SECONDARY_900}
-      `,
-      warning: `
-      ${BgColor.SECONDARY_900}
-      ${TextColor.WHITE}
-      ${HOVER.BgColor.SECONDARY}
-      ${HOVER.BorderColor.SECONDARY}
-      ${FOCUS.BorderColor.SECONDARY}
-      ${BorderColor.SECONDARY_900}
-      `,
-      primary: `
-                ${BgColor.PRIMARY_900}
-                ${TextColor.WHITE}      
-                ${HOVER.BgColor.PRIMARY}
-                ${HOVER.BorderColor.PRIMARY}
-                ${FOCUS.BorderColor.PRIMARY}
-                ${BorderColor.PRIMARY_900}
-                `,
-      info: `
-                ${BgColor.PRIMARY_100}
-                ${TextColor.GREY_700}      
-                ${HOVER.BgColor.PRIMARY}
-                ${HOVER.BorderColor.PRIMARY}
-                ${FOCUS.BorderColor.PRIMARY}
-                ${BorderColor.PRIMARY_100}
-                `,
+      error: `bg-support-c500 text-white px-5 py-2 text-sm hover:opacity-90 font-medium border-none`,
+      grey: `bg-grey-c100 text-grey-c900 px-5 py-2 text-sm hover:bg-grey-c100 font-medium border-none`,
+      secondary: `bg-secondary-c900 text-white px-5 py-2 text-sm hover:opacity-90 font-medium border-none`,
+      primary: `bg-primary-c900 text-white px-5 py-2 text-sm hover:opacity-90 font-medium border-none`,
+      info: `bg-blue-c900 text-white px-5 py-2 text-sm hover:opacity-90 font-medium border-none`,
+      black: `bg-black text-white px-5 py-2 text-sm hover:opacity-90 font-medium border-none`,
     };
   }, []);
+
   return (
     <button
       {...args}
@@ -96,9 +65,11 @@ const Button = forwardRef<
                     ${BgColor.GREY_400}
                     ${TextColor.WHITE}
                     ${BorderColor.GREY_400}
+                    !border-0
                 `
                     : `
                     ${colorAttitude[color]}
+                    !border-0
                     hover:scale-105
                     `
                 }

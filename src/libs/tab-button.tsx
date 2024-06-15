@@ -4,10 +4,9 @@ interface MyTabButtonProps {
   children?: ReactNode;
   width?: string;
   height?: string;
-  bgColor?: string;
-  bgHover?: string;
   px?: string;
   py?: string;
+  isSelected?: boolean;
   onClick?: () => void;
 }
 
@@ -15,16 +14,15 @@ const MyTabButton: React.FC<MyTabButtonProps> = ({
   children,
   width,
   height,
-  bgColor,
-  bgHover,
   px,
   py,
+  isSelected = true,
   onClick,
 }) => {
   return (
     <div
       onClick={onClick}
-      className={`flex ${onClick ? "cursor-pointer" : "cursor-default"} ${onClick ? (bgHover ? "hover:" + bgHover : "hover:bg-primary-c600") : ""} ${width ?? "w-fit "} ${height ?? "h-fit "} ${px ?? "px-3"} ${py ?? "py-1.5"} ${bgColor ?? "bg-primary-c800"} items-center justify-center rounded-full`}
+      className={`flex text-sm font-medium duration-200 ease-in-out hover:scale-105 hover:cursor-pointer ${isSelected ? "bg-primary-c900 text-white hover:bg-primary-c700" : "bg-primary-c100 text-grey-c900 hover:bg-primary-c200"} ${width ?? "w-fit "} ${height ?? "h-fit "} ${px ?? "px-3"} ${py ?? "py-1.5"} items-center justify-center rounded-full`}
     >
       {children}
     </div>

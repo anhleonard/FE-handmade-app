@@ -53,6 +53,7 @@ type Props = {
   selectClassName?: string;
   closeOnSelect?: boolean;
   itemClassName?: string;
+  wrapClassName?: string;
   boxClassName?: string;
   multiple?: boolean;
   endIcon?: React.ReactNode;
@@ -90,7 +91,7 @@ const getListItem = (
   return listItem;
 };
 
-const Select = forwardRef<HTMLDivElement, Props>(function Select(
+const MySelect = forwardRef<HTMLDivElement, Props>(function Select(
   {
     id,
     className = "",
@@ -102,6 +103,7 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
     options = [],
     selectClassName = "",
     closeOnSelect = true,
+    wrapClassName = "",
     boxClassName = "",
     itemClassName = "",
     multiple = false,
@@ -151,8 +153,8 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
   const colorAttitude = useMemo(() => {
     return {
       error: `
-                ${BgColor.SUPPORT_300}
-                ${TextColor.GREY_900}      
+                ${BgColor.SUPPORT_10}
+                ${TextColor.SUPPORT_500}      
                 ${BorderColor.SUPPORT_500}
                 ${FOCUS.BorderColor.SUPPORT}
                 focus-within:border-support-c500
@@ -166,8 +168,8 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
                 `,
       disable: `
                 ${BgColor.GREY_100}
-                ${TextColor.GREY_900}
-                ${BorderColor.GREY_400}
+                ${TextColor.GREY_500}
+                ${BorderColor.GREY_200}
                 `,
     };
   }, []);
@@ -233,7 +235,11 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
         <div
           className={`flex w-[inherit] gap-2 truncate ${colorAttitude["normal"]}`}
         >
-          <div className={`truncate`}>{select[0].label}</div>
+          <div
+            className={`truncate ${error ? "font-medium text-support-c500" : ""}`}
+          >
+            {select[0].label}
+          </div>
         </div>
       )
     ) : (
@@ -244,13 +250,17 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
   };
 
   return (
-    <div className="relative">
-      <div className="mb-1 block text-sm font-medium text-grey-c600 dark:text-white">
-        {title}
-        {isRequired ? (
-          <span className="text-base text-support-c500"> *</span>
-        ) : null}
-      </div>
+    <div className={`relative ${wrapClassName}`}>
+      <>
+        {title && (
+          <div className="mb-1 block text-sm font-medium text-grey-c600 dark:text-white">
+            {title}
+            {isRequired ? (
+              <span className="text-base text-support-c500"> *</span>
+            ) : null}
+          </div>
+        )}
+      </>
       <div
         id={id}
         ref={ref}
@@ -275,11 +285,10 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
                                 rounded-2xl
                                 border-[2px]
                                 bg-[inherit] 
-                                px-1
-                                py-2
-                                text-sm
-                                outline-0 sm:text-sm md:text-base
-                                ${!title ? "pt-2" : ""}
+                                px-3
+                                py-3
+                                text-base
+                                outline-0
                                 ${
                                   disabled
                                     ? `${colorAttitude["disable"]} cursor-default`
@@ -300,7 +309,7 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
             onChange={() => null}
             className="pointer-events-none absolute hidden select-none opacity-0"
           />
-          <div className="flex w-full items-center justify-between gap-0 px-2 py-1 xl:py-1.5">
+          <div className="flex w-full items-center justify-between gap-0">
             <div className="relative flex w-[inherit] truncate">
               {altLabel ? (
                 altLabel
@@ -428,4 +437,4 @@ const Select = forwardRef<HTMLDivElement, Props>(function Select(
   );
 });
 
-export default memo(Select);
+export default memo(MySelect);

@@ -69,9 +69,151 @@ body {
   src: url("../assets/fonts/Quicksand-Bold.ttf");
 }
 
+.cutoff-text {
+  --max-lines: 2;
+  --line-height: 1.4;
+  max-height: calc(var(--max-lines) * 1rem * var(--line-height) - 4px);
+  line-height: var(--line-height);
+  overflow: hidden;
+  position: relative;
+}
+
+.cutoff-text:has(+ .expand-button:not(:checked))::before {
+  content: "";
+  position: absolute;
+  height: calc(2em * var(--line-height));
+  width: 100%;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.expand-button::before {
+  content: "Xem đầy đủ";
+  @apply text-xs font-semibold text-primary-c700 underline;
+}
+
+.expand-button:checked:before {
+  content: "Thu gọn";
+}
+
+.cutoff-text:has(+ .expand-button:checked) {
+  max-height: none;
+}
+
+.MuiTabPanel-root {
+  padding: 0 !important;
+}
+
 .ant-picker,
 .ant-picker-input,
 .ant-picker-date-panel,
 .ant-typography {
   font-family: "Quicksand", sans-serif !important;
+}
+
+/* fix style for upload image by antd */
+
+:where(.css-dev-only-do-not-override-1r287do).ant-upload-wrapper
+  .ant-upload-list.ant-upload-list-picture
+  .ant-upload-list-item,
+:where(.css-dev-only-do-not-override-1r287do).ant-upload-wrapper
+  .ant-upload-list.ant-upload-list-picture-card
+  .ant-upload-list-item,
+:where(.css-dev-only-do-not-override-1r287do).ant-upload-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item {
+  padding: 0 !important;
+  border: none !important;
+}
+
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload-list.ant-upload-list-picture-card
+  .ant-upload-list-item-thumbnail,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload-list.ant-upload-list-picture-card
+  .ant-upload-list-item-thumbnail,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item-thumbnail,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item-thumbnail,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload-list.ant-upload-list-picture-card
+  .ant-upload-list-item-thumbnail
+  img,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload-list.ant-upload-list-picture-card
+  .ant-upload-list-item-thumbnail
+  img,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item-thumbnail
+  img,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item-thumbnail
+  img {
+  border-radius: 8px !important;
+}
+
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload-list.ant-upload-list-picture-card
+  .ant-upload-list-item::before,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload-list.ant-upload-list-picture-card
+  .ant-upload-list-item::before,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item::before,
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item::before {
+  width: calc(100%) !important;
+  height: calc(100%) !important;
+  border-radius: 8px !important;
+}
+
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload.ant-upload-select {
+  border: 2px dashed #c6c6c6 !important;
+}
+
+:where(
+    .css-dev-only-do-not-override-1r287do
+  ).ant-upload-wrapper.ant-upload-picture-card-wrapper
+  .ant-upload.ant-upload-select:hover {
+  border: 2px dashed #ffddb0 !important;
+}
+
+/* fix style for upload image by antd */
+
+.flatpickr-calendar.open {
+  z-index: 9999999 !important;
 }

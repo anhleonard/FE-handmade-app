@@ -88,4 +88,17 @@ export const COLORS = {
     c100: "#FFFCDD",
     c50: "#FFFDEA",
   },
+  purple: {
+    c900: "#A10091",
+    c800: "#A31A95",
+    c700: "#A32E97",
+    c600: "#A63D9C",
+    c500: "#AB50A2",
+    c400: "#C86DBE",
+    c300: "#D68ECF",
+    c200: "#E2ACDD",
+    c100: "#F0C6EC",
+    c50: "#F4D6F6",
+    c10: "#F8E5F9",
+  },
 };
