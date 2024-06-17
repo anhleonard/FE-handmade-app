@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, ReactNode } from "react";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
