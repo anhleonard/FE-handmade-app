@@ -3,6 +3,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Modal, Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { Typography } from "@mui/material";
+import { headerUrl } from "@/apis/services/authentication";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -59,6 +60,7 @@ const UploadImage: React.FC<Props> = ({
   return (
     <>
       <Upload
+        action={`${headerUrl}/products/uploads`}
         listType="picture-card"
         onPreview={handlePreview}
         onChange={handleChange}
