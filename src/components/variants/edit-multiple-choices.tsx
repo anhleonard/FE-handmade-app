@@ -11,7 +11,7 @@ const MyEditMultipleChoices = ({ variants, handleUpdateVariants }: Props) => {
   return (
     <div className="flex w-full flex-col gap-8 border-b-2 border-t-2 border-grey-c50 pb-8 pt-5">
       {variants?.length
-        ? variants
+        ? [...variants]
             .sort((a, b) => a.id - b.id)
             .map((variant: Variant, index: number) => {
               return (
