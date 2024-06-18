@@ -57,11 +57,16 @@ const UploadImage: React.FC<Props> = ({
     </button>
   );
 
+  const dummyRequest = ({ file, onSuccess }: any) => {
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
+  };
+
   return (
     <>
       <Upload
-        // action={`${headerUrl}/products/uploads`}
-        action={"https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"}
+        customRequest={dummyRequest}
         listType="picture-card"
         onPreview={handlePreview}
         onChange={handleChange}
