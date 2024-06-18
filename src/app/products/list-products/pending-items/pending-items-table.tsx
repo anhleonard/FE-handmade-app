@@ -3,19 +3,11 @@ import {
   AlertStatus,
   Page,
   ProductStatus,
-  mainCategories,
   rowsPerPage,
 } from "@/enum/constants";
-import {
-  DeleteIcon,
-  DetailIcon,
-  EditIcon,
-  OffIcon,
-  SearchIcon,
-} from "@/enum/icons";
+import { DeleteIcon, DetailIcon, EditIcon, SearchIcon } from "@/enum/icons";
 import MyTextField from "@/libs/text-field";
 import MySelect, { Item } from "@/libs/select";
-import Image from "next/image";
 import { FontFamily, FontSize, SCREEN } from "@/enum/setting";
 import { useDispatch, useSelector } from "react-redux";
 import { openModal } from "@/redux/slices/modalSlice";

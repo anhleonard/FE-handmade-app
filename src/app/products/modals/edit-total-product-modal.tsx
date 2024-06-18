@@ -1,3 +1,4 @@
+"use client";
 import { headerUrl } from "@/apis/services/authentication";
 import { getCategories } from "@/apis/services/categories";
 import {
@@ -5,7 +6,7 @@ import {
   updateProductVariants,
 } from "@/apis/services/product";
 import { uploadImages, uploadSingleImage } from "@/apis/services/uploads";
-import { updateSimpleVariant, updateVariant } from "@/apis/services/variants";
+import { updateSimpleVariant } from "@/apis/services/variants";
 import storage from "@/apis/storage";
 import MyEditMultipleChoices from "@/components/variants/edit-multiple-choices";
 import { AlertStatus, ProductStatus, yesNoOptions } from "@/enum/constants";
