@@ -60,7 +60,8 @@ const UploadImage: React.FC<Props> = ({
   return (
     <>
       <Upload
-        action={`${headerUrl}/products/uploads`}
+        // action={`${headerUrl}/products/uploads`}
+        action={"https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"}
         listType="picture-card"
         onPreview={handlePreview}
         onChange={handleChange}
