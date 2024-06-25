@@ -88,3 +88,15 @@ export const filterSellerOrders = async (token: string, query: any) => {
     .get(`${headerUrl}/orders/seller-filter-orders?${queryString}`, config)
     .then((res) => res.data);
 };
+
+export const sellerOrderSales = async (token: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return await axios
+    .get(`${headerUrl}/orders/seller-order-sales`, config)
+    .then((res) => res.data);
+};

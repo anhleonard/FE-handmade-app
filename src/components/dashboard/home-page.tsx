@@ -1,18 +1,14 @@
 "use client";
-import React, { createContext, useEffect, useState } from "react";
-import ChartOne from "../Charts/ChartOne";
+import React, { useEffect, useState } from "react";
 import PieChart from "../Charts/pie-chart";
-import ChartTwo from "../Charts/ChartTwo";
 import CardDataStats from "./CardDataStats";
-import MapOne from "../Maps/MapOne";
 import { COLORS } from "@/enum/colors";
 import CombineChart from "../Charts/combine-chart";
-import ProgramCard from "../Charts/programs";
 import { useDispatch, useSelector } from "react-redux";
 import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
 import storage from "@/apis/storage";
 import { singleStore } from "@/apis/services/stores";
-import { AlertState, Store } from "@/enum/defined-type";
+import { AlertState, SellerSale, Store } from "@/enum/defined-type";
 import { AlertStatus, StoreStatus } from "@/enum/constants";
 import { openAlert } from "@/redux/slices/alertSlice";
 import InactiveStorePage from "../stores/inactive-store";
@@ -20,21 +16,28 @@ import { closeSideBar, openSideBar } from "@/redux/slices/sidebarSlice";
 import { RootState } from "@/redux/store";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { addStore } from "@/redux/slices/storeSlice";
+import { sellerOrderSales } from "@/apis/services/orders";
+import { sellerFormatCurrency } from "@/enum/functions";
+import BarChat from "../Charts/bar-chart";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   const [store, setStore] = useState<Store>();
   const loading = useSelector((state: RootState) => state.loading);
   const refetchQueries = useSelector((state: RootState) => state.refetch.time);
+  const [sales, setSales] = useState<SellerSale>();
 
   const getSingleStore = async () => {
     try {
       dispatch(openLoading());
       const token = storage.getLocalAccessToken();
       const res: Store = await singleStore(token);
-      if (res) {
+      const sales: SellerSale = await sellerOrderSales(token);
+
+      if (res && sales) {
         dispatch(addStore({ name: res?.name }));
         setStore(res);
+        setSales(sales);
       }
     } catch (error: any) {
       let alert: AlertState = {
@@ -70,8 +73,8 @@ const HomePage: React.FC = () => {
     <div>
       <div className="2xl:gap-7.5 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
         <CardDataStats
-          title="Đơn hàng cần xác nhận"
-          total="1024"
+          title="Tổng số sản phẩm"
+          total={sales?.product?.totalProducts ? `${sales?.product?.totalProducts}` : '0'}
           rate="0.43%"
           levelUp
         >
@@ -96,7 +99,7 @@ const HomePage: React.FC = () => {
 
         <CardDataStats
           title="Sản phẩm hết hàng"
-          total="1025"
+          total={sales?.product?.outOfStockCount ? `${sales?.product?.outOfStockCount}` : '0'}
           rate="4.35%"
           levelUp
         >
@@ -116,7 +119,7 @@ const HomePage: React.FC = () => {
 
         <CardDataStats
           title="Sản phẩm vi phạm"
-          total="1026"
+          total={sales?.product?.violateCount ? `${sales?.product?.violateCount}` : '0'}
           rate="2.59%"
           levelUp
         >
@@ -148,8 +151,8 @@ const HomePage: React.FC = () => {
         </CardDataStats>
 
         <CardDataStats
-          title="Tổng doanh thu"
-          total="1027"
+          title="Đơn hàng cần xác nhận"
+          total={sales?.counts.WAITING_PAYMENT ? `${sales?.counts.WAITING_PAYMENT}` : '0'}
           rate="0.95%"
           levelDown
         >
@@ -176,8 +179,8 @@ const HomePage: React.FC = () => {
         </CardDataStats>
 
         <CardDataStats
-          title="Tổng số sản phẩm"
-          total="1028"
+          title="Doanh thu"
+          total={sales?.totalRevenue ? `${sellerFormatCurrency(sales?.totalRevenue)}` : '0'}
           rate="0.95%"
           levelDown
         >
@@ -199,8 +202,8 @@ const HomePage: React.FC = () => {
         </CardDataStats>
 
         <CardDataStats
-          title="Tổng số đơn hàng"
-          total="1029"
+          title="Thu về"
+          total={sales?.totalRevenue ? `${sellerFormatCurrency(sales?.totalRevenue * 0.8)}` : '0'}
           rate="0.95%"
           levelDown
         >
@@ -241,9 +244,7 @@ const HomePage: React.FC = () => {
 
       <div className="2xl:mt-7.5 2xl:gap-7.5 mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6">
         <PieChart />
-        <ProgramCard />
-        {/* <ChartTwo /> */}
-        {/* <MapOne /> */}
+        {sales?.counts && sales.totalOrders ? <BarChat data={sales?.counts} totalOrders={sales?.totalOrders}/> : null}
       </div>
     </div>
   );

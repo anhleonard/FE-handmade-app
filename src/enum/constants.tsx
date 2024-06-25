@@ -22,17 +22,14 @@ import FourStarTable from "@/app/reviews/four-star/four-star-table";
 import ThreeStarTable from "@/app/reviews/three-star/three-star-table";
 import TwoStarTable from "@/app/reviews/two-star/two-star-table";
 import OneStarTable from "@/app/reviews/one-star/one-star-table";
-import AllAuctionsTab from "@/app/auctions/my-auctions/all-auctions/all-auctions-table";
 import ProcessingAuctionsTab from "@/app/auctions/my-auctions/processing-auctions/processing-auctions-table";
 import FinishedAuctionsTab from "@/app/auctions/my-auctions/finished-auctions/finished-auctions-table";
 import CanceledAuctionsTab from "@/app/auctions/my-auctions/canceled-auctions/canceled-auctions-table";
 import { FilterTime } from "./defined-type";
-// import StoreProfile from "@/app/(profile)/store-profile/page";
-import EditSellerModal from "@/components/profile/edit-seller-modal";
-// import SellerProfile from "@/app/(profile)/seller-profile/page";
 import DeliveryAuctionsTab from "@/app/auctions/my-auctions/delivery-auctions/delivery-auctions-table";
 import WaitingAuctionsTab from "@/app/auctions/my-auctions/waiting-auctions/waiting-auctions-table";
 import dynamic from "next/dynamic";
+
 const SellerProfile = dynamic(
   () => {
     return import("@/app/(profile)/seller-profile/page");
@@ -380,6 +377,7 @@ export enum EnumOrderStatus {
   SHIPPED = "SHIPPED",
   DELIVERED = "DELIVERED",
   CENCELLED = "CENCELLED",
+  OVERDATE = "OVERDATE",
 }
 
 export enum Role {

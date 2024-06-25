@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import { Url } from "url";
-import { AlertStatus, ProductStatus, Role, StoreStatus } from "./constants";
+import { AlertStatus, EnumOrderStatus, ProductStatus, Role, StoreStatus } from "./constants";
 import { Item } from "@/libs/select";
 
 export type ColTabItem = {
@@ -313,3 +312,25 @@ export type PaidAuction = {
   zp_trans_id: string;
   auction: Auction;
 };
+
+export type ProductCount = {
+  totalProducts: number;
+  outOfStockCount: number;
+  violateCount: number;
+}
+
+export interface OrderCount {
+  [EnumOrderStatus.WAITING_PAYMENT]: number;
+  [EnumOrderStatus.PROCESSING]: number;
+  [EnumOrderStatus.SHIPPED]: number;
+  [EnumOrderStatus.DELIVERED]: number;
+  [EnumOrderStatus.CENCELLED]: number;
+  [EnumOrderStatus.OVERDATE]: number;
+}
+
+export interface SellerSale {
+  counts: OrderCount;
+  totalRevenue: number;
+  totalOrders: number;
+  product: ProductCount;
+}
