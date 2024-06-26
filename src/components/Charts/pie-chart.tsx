@@ -134,11 +134,28 @@ const PieChart: React.FC = () => {
 
       <div className="mb-2">
         <div id="chartThree" className="mx-auto flex justify-center">
-          <ReactApexChart
-            options={options}
-            series={state.series}
-            type="donut"
-          />
+          {/* có data thì render biểu đồ */}
+          {state?.series?.length ? (
+            <ReactApexChart
+              options={options}
+              series={state.series}
+              type="donut"
+            />
+          ) : null}
+
+          {/* giao diện không có data */}
+          {!state?.series?.length ? (
+            <div className="flex h-full flex-col items-center justify-center gap-3 py-12">
+              <img
+                src="/images/no-data.png"
+                alt="no-data"
+                className="h-36 w-36"
+              />
+              <div className="text-sm font-medium text-grey-c900">
+                Chưa có dữ liệu
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 

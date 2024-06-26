@@ -15,7 +15,6 @@ import { createVariantCategory } from "@/apis/services/variant-category";
 
 const validationSchema = yup.object({
   name: yup.string().required("Vui lòng không để trống trường này."),
-  // tags: yup.array().min(1, "Vui lòng nhập ít nhất là 1 tag."),
 });
 
 const CreateVariantCategoriesModal = () => {
@@ -29,9 +28,6 @@ const CreateVariantCategoriesModal = () => {
   };
 
   const initialValues = { name: "" };
-  // const initialValues = useMemo(() => {
-  //   return { name: title ?? "", tags: tags ?? [] };
-  // }, [tags, title]);
 
   const handleInputChange = (event: any) => {
     setInputValue(event.target.value);
@@ -130,13 +126,6 @@ const CreateVariantCategoriesModal = () => {
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyDown={handleInputKeyPress}
-                // isError={
-                //   getIn(formik.touched, "tags") &&
-                //   Boolean(getIn(formik.errors, "tags"))
-                // }
-                // helperText={
-                //   getIn(formik.touched, "tags") && getIn(formik.errors, "tags")
-                // }
               />
               <div className="flex items-center justify-center pt-2">
                 <Button

@@ -1,0 +1,147 @@
+import Button from "@/libs/button";
+import MyTextField from "@/libs/text-field";
+import React, { useState } from "react";
+import { Chip } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { closeModal } from "@/redux/slices/modalSlice";
+import * as yup from "yup";
+import { Form, Formik, getIn } from "formik";
+import storage from "@/apis/storage";
+import { closeLoading, openLoading } from "@/redux/slices/loadingSlice";
+import { AlertState, VariantCategory } from "@/enum/defined-type";
+import { AlertStatus } from "@/enum/constants";
+import { openAlert } from "@/redux/slices/alertSlice";
+import {
+  createVariantCategory,
+  updateVariantCategory,
+} from "@/apis/services/variant-category";
+
+const validationSchema = yup.object({
+  name: yup.string().required("Vui lòng không để trống trường này."),
+});
+
+type Props = {
+  variantCategory: VariantCategory;
+  handleRefetch: () => void;
+};
+
+const UpdateVariantCategoriesModal = ({
+  variantCategory,
+  handleRefetch,
+}: Props) => {
+  const dispatch = useDispatch();
+  const [tags, setTags] = useState<any>([]);
+  const [inputValue, setInputValue] = useState("");
+
+  const initialValues = { name: variantCategory?.variantName };
+
+  const handleInputChange = (event: any) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleInputKeyPress = (event: any) => {
+    if (event.key === "Enter" && inputValue.trim() !== "") {
+      setTags([...tags, inputValue.trim()]);
+      setInputValue("");
+    }
+  };
+
+  const handleDeleteTag = (tagToDelete: any) => {
+    setTags(tags.filter((tag: any) => tag !== tagToDelete));
+  };
+
+  const onSubmit = async (values: any) => {
+    try {
+      dispatch(openLoading());
+      const variables = {
+        values: tags,
+      };
+
+      const token = storage.getLocalAccessToken();
+      const response = await updateVariantCategory(
+        variantCategory?.id,
+        variables,
+        token,
+      );
+      if (response) {
+        let alert: AlertState = {
+          isOpen: true,
+          title: "THÀNH CÔNG",
+          message: "Chỉnh sửa phân loại thành công",
+          type: AlertStatus.SUCCESS,
+        };
+        dispatch(openAlert(alert));
+        dispatch(closeModal());
+        handleRefetch();
+      }
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    } finally {
+      dispatch(closeLoading());
+    }
+  };
+
+  const handleKeyDown = (event: any) => {
+    if (event?.key === "Enter") {
+      event.preventDefault();
+    }
+  };
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+    >
+      {(formik) => (
+        <Form onKeyDown={handleKeyDown}>
+          <div className="space-y-4 py-4">
+            <MyTextField
+              id="name"
+              name="name"
+              title="Tên phân loại"
+              placeholder="Nhập tên phân loại. Ví dụ: Kích cỡ"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              disabled
+            />
+            <div className="space-y-4">
+              {tags.map((tag: any, index: number) => (
+                <Chip
+                  key={index}
+                  label={tag}
+                  onDelete={() => handleDeleteTag(tag)}
+                  style={{ margin: "4px" }}
+                  color="warning"
+                />
+              ))}
+              <MyTextField
+                id="tags"
+                name="tags"
+                title="Tên tùy chọn"
+                placeholder="Nhập tên tùy chọn. Ví dụ: XXL"
+                className="mt-1 w-full"
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyDown={handleInputKeyPress}
+              />
+              <div className="flex items-center justify-center pt-2">
+                <Button type="submit" className="!min-w-[120px]">
+                  Thêm
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+export default UpdateVariantCategoriesModal;

@@ -13,6 +13,22 @@ export const createVariantCategory = async (variables: any, token: string) => {
     .then((res) => res.data);
 };
 
+export const updateVariantCategory = async (
+  id: number,
+  variables: any,
+  token: string,
+) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return await axios
+    .put(`${headerUrl}/variant-categories/update/${id}`, variables, config)
+    .then((res) => res.data);
+};
+
 export const getVariantCategoriesByUser = async (token: string) => {
   const config = {
     headers: {
