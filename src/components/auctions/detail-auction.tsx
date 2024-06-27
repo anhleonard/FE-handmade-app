@@ -24,8 +24,13 @@ import storage from "@/apis/storage";
 import { headerUrl } from "@/apis/services/authentication";
 import CancelAuctionModal from "./modals/cancel-auction-modal";
 import { SCREEN } from "@/enum/setting";
-import { openModal } from "@/redux/slices/modalSlice";
+import { closeModal, openModal } from "@/redux/slices/modalSlice";
 import ExtendDaysModal from "./modals/extend-days-modal";
+import { CreateRefundPaymentValues, PaidAuctionValues } from "@/apis/types";
+import {
+  createRefundPayment,
+  updatePaidAuction,
+} from "@/apis/services/payment";
 
 type Props = {
   status: AuctionStatus;
@@ -140,7 +145,7 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
       title: "XÁC NHẬN TỪ CHỐI NHẬN",
       message: "Bạn đã chắc chắn từ chối nhận dự án này chưa?",
       feature: "CONFIRM_CONTACT_US",
-      onConfirm: async () => {},
+      onConfirm: async () => handleRefundMoney(),
     };
 
     dispatch(openConfirm(confirm));
@@ -189,6 +194,107 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
 
       default:
         return <MyLabel type="grey">Chờ duyệt</MyLabel>;
+    }
+  };
+
+  const handleRefundMoney = async () => {
+    try {
+      dispatch(openLoading());
+
+      const token = storage.getLocalAccessToken();
+      const selectedBidder = auction?.candidates?.filter(
+        (bidder) => bidder.isSelected === true,
+      )[0];
+      const userPaids = auction?.paids || [];
+      const auctionId = auction?.id;
+
+      const variables = {
+        status: AuctionStatus.CANCELED,
+        additionalComment: "Hủy do nhà bán từ chối nhận dự án.",
+      };
+
+      let deposit = 0;
+      let depositValues: CreateRefundPaymentValues | null = null;
+      let totalValues: CreateRefundPaymentValues | null = null;
+
+      userPaids.forEach((paid) => {
+        if (paid.type === "deposit") {
+          depositValues = {
+            zp_trans_id: paid.zp_trans_id,
+            amount: auction.deposit,
+          };
+          deposit = auction.deposit;
+        }
+
+        if (paid.type === "total") {
+          totalValues = {
+            zp_trans_id: paid.zp_trans_id,
+            amount: selectedBidder.bidderMoney - deposit,
+          };
+        }
+      });
+
+      const handlePaymentRefund = async (
+        paymentValues: CreateRefundPaymentValues,
+        type: string,
+      ) => {
+        const res = await createRefundPayment(paymentValues);
+        if (res?.return_code === 2) {
+          const alert: AlertState = {
+            isOpen: true,
+            title: `LỖI HOÀN TIỀN ${type === "deposit" ? "CỌC" : ""}`,
+            message: res?.return_message,
+            type: AlertStatus.ERROR,
+          };
+          dispatch(openAlert(alert));
+          return false;
+        }
+        const params: PaidAuctionValues = {
+          auctionId,
+          type,
+        };
+        await updatePaidAuction(params, token);
+        return true;
+      };
+
+      const refundDeposit = depositValues
+        ? handlePaymentRefund(depositValues, "deposit")
+        : Promise.resolve(true);
+      const refundTotal = totalValues
+        ? handlePaymentRefund(totalValues, "total")
+        : Promise.resolve(true);
+
+      const [isDepositRefunded, isTotalRefunded] = await Promise.all([
+        refundDeposit,
+        refundTotal,
+      ]);
+
+      console.log({ isDepositRefunded, isTotalRefunded });
+
+      if (isDepositRefunded && isTotalRefunded) {
+        const updatedAuction = await updateAuction(auctionId, variables, token);
+        if (updatedAuction) {
+          dispatch(closeConfirm());
+          let alert: AlertState = {
+            isOpen: true,
+            title: "HỦY DỰ ÁN & HOÀN TIỀN",
+            message: "Đã hủy dự án và hoàn tiền lại cho khách hàng thành công",
+            type: AlertStatus.SUCCESS,
+          };
+          dispatch(openAlert(alert));
+          handleRefetch();
+        }
+      }
+    } catch (error: any) {
+      let alert: AlertState = {
+        isOpen: true,
+        title: "LỖI",
+        message: error?.response?.data?.message,
+        type: AlertStatus.ERROR,
+      };
+      dispatch(openAlert(alert));
+    } finally {
+      dispatch(closeLoading());
     }
   };
 

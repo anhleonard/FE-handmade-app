@@ -16,6 +16,7 @@ import { AlertStatus, AuctionStatus } from "@/enum/constants";
 import { openAlert } from "@/redux/slices/alertSlice";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { RootState } from "@/redux/store";
+import RandomAuctions from "@/components/auctions/random-auctions";
 
 type Props = {
   auctionId: number;
@@ -132,19 +133,7 @@ const MyDetailSellerAuctionScreen = ({ auctionId }: Props) => {
             )}
           </div>
           <div className="flex flex-col gap-4 md:col-span-1">
-            <div className="font-bold text-grey-c900">Các dự án khác</div>
-            <div className="flex flex-col gap-2">
-              <div className="font-bold text-grey-c900 hover:cursor-pointer hover:underline">
-                Large-scale Oracle to MySQL Conversion
-              </div>
-              <div className="text-sm">$100 - $200</div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div className="font-bold text-grey-c900 hover:cursor-pointer hover:underline">
-                Large-scale Oracle to MySQL Conversion
-              </div>
-              <div className="text-sm">$100 - $200</div>
-            </div>
+            <RandomAuctions />
           </div>
         </div>
       </div>

@@ -37,95 +37,89 @@ const CancelAuctionModal = ({ auction, handleRefetch }: Props) => {
     try {
       dispatch(openLoading());
 
-      //update auction
-      const variables = {
-        status: AuctionStatus.CANCELED,
-        additionalComment: values.additionalComment,
-      };
       const token = storage.getLocalAccessToken();
-
-      //refund amount of money
-      const userPaids: PaidAuction[] = auction?.paids;
-
-      let deposit = 0; //khởi tạo deposit
-      let depositValues: CreateRefundPaymentValues | null = null;
-      let totalValues: CreateRefundPaymentValues | null = null;
-
       const selectedBidder = auction?.candidates?.filter(
         (bidder) => bidder.isSelected === true,
       )[0];
+      const userPaids = auction?.paids || [];
+      const auctionId = auction?.id;
 
-      for (let paid of userPaids) {
+      const variables = {
+        status: AuctionStatus.CANCELED,
+        additionalComment: values?.additionalComment,
+      };
+
+      let deposit = 0;
+      let depositValues: CreateRefundPaymentValues | null = null;
+      let totalValues: CreateRefundPaymentValues | null = null;
+
+      userPaids.forEach((paid) => {
         if (paid.type === "deposit") {
           depositValues = {
             zp_trans_id: paid.zp_trans_id,
             amount: auction.deposit,
           };
-
-          deposit = auction?.deposit;
+          deposit = auction.deposit;
         }
 
         if (paid.type === "total") {
           totalValues = {
             zp_trans_id: paid.zp_trans_id,
-            amount: selectedBidder?.bidderMoney - deposit,
+            amount: selectedBidder.bidderMoney - deposit,
           };
         }
-      }
+      });
 
-      let resDeposit: any;
-      let resTotal: any;
-
-      if (depositValues) {
-        resDeposit = await createRefundPayment(depositValues);
-        if (resDeposit?.return_code === 2) {
-          let alert: AlertState = {
+      const handlePaymentRefund = async (
+        paymentValues: CreateRefundPaymentValues,
+        type: string,
+      ) => {
+        const res = await createRefundPayment(paymentValues);
+        if (res?.return_code === 2) {
+          const alert: AlertState = {
             isOpen: true,
-            title: "LỖI HOÀN TIỀN CỌC",
-            message: resDeposit?.return_message,
+            title: `LỖI HOÀN TIỀN ${type === "deposit" ? "CỌC" : ""}`,
+            message: res?.return_message,
             type: AlertStatus.ERROR,
           };
           dispatch(openAlert(alert));
-          return;
+          return false;
         }
         const params: PaidAuctionValues = {
-          auctionId: auction?.id,
-          type: "deposit",
+          auctionId,
+          type,
         };
         await updatePaidAuction(params, token);
-      }
+        return true;
+      };
 
-      if (totalValues) {
-        resTotal = await createRefundPayment(totalValues);
-        if (resTotal?.return_code === 2) {
+      const refundDeposit = depositValues
+        ? handlePaymentRefund(depositValues, "deposit")
+        : Promise.resolve(true);
+      const refundTotal = totalValues
+        ? handlePaymentRefund(totalValues, "total")
+        : Promise.resolve(true);
+
+      const [isDepositRefunded, isTotalRefunded] = await Promise.all([
+        refundDeposit,
+        refundTotal,
+      ]);
+
+      console.log({ isDepositRefunded, isTotalRefunded });
+
+      if (isDepositRefunded && isTotalRefunded) {
+        const updatedAuction = await updateAuction(auctionId, variables, token);
+        if (updatedAuction) {
+          dispatch(closeModal());
           let alert: AlertState = {
             isOpen: true,
-            title: "LỖI HOÀN TIỀN",
-            message: resDeposit?.return_message,
-            type: AlertStatus.ERROR,
+            title: "HỦY DỰ ÁN & HOÀN TIỀN",
+            message: "Đã hủy dự án và hoàn tiền lại cho khách hàng thành công",
+            type: AlertStatus.SUCCESS,
           };
           dispatch(openAlert(alert));
-          return;
+          handleRefetch();
         }
-        const params: PaidAuctionValues = {
-          auctionId: auction?.id,
-          type: "total",
-        };
-        await updatePaidAuction(params, token);
-      }
-
-      const updatedAuction = await updateAuction(auction?.id, variables, token);
-
-      if (updatedAuction && resDeposit && resTotal) {
-        dispatch(closeModal());
-        let alert: AlertState = {
-          isOpen: true,
-          title: "HỦY DỰ ÁN & HOÀN TIỀN",
-          message: "Đã hủy dự án và hoàn tiền lại cho khách hàng thành công",
-          type: AlertStatus.SUCCESS,
-        };
-        dispatch(openAlert(alert));
-        handleRefetch();
       }
     } catch (error: any) {
       let alert: AlertState = {

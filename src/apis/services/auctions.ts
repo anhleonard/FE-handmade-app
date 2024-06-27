@@ -5,8 +5,6 @@ export const filterAuctions = async (query?: any) => {
   const params = new URLSearchParams(query).toString();
   const url = `${headerUrl}/auctions/filter?${params}`;
 
-  console.log({ url });
-
   return await axios.get(url).then((res) => res.data);
 };
 
@@ -53,5 +51,11 @@ export const updateAuction = async (
 
   return await axios
     .put(`${headerUrl}/auctions/update/${id}`, variables, config)
+    .then((res) => res.data);
+};
+
+export const randomAuctions = async () => {
+  return await axios
+    .get(`${headerUrl}/auctions/random`)
     .then((res) => res.data);
 };
