@@ -154,7 +154,10 @@ const EditTotalProductModal = ({
         const { price, inventoryNumber, ...updatedVariables } = values;
         const res = await updateProductBySeller(
           product.id,
-          updatedVariables,
+          {
+            ...updatedVariables,
+            categoryId: selectedLabels,
+          },
           token,
         );
         if (res) {

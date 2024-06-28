@@ -221,7 +221,11 @@ const PendingItemsTable = () => {
                     <td className="px-1 py-4">
                       <div className="flex flex-row items-start gap-2">
                         <img
-                          src={`${headerUrl}/products/${product.images[0]}`}
+                          src={
+                            !product?.isMultipleClasses
+                              ? `${headerUrl}/products/${product.images[0]}`
+                              : `${headerUrl}/products/${product?.variants[0]?.image}`
+                          }
                           alt="product-image"
                           className="h-15 w-15 rounded-lg object-cover"
                         />
