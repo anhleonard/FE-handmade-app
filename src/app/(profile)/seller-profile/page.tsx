@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { refetchComponent } from "@/redux/slices/refetchSlice";
 import { RootState } from "@/redux/store";
 import EditSellerModal from "@/components/profile/edit-seller-modal";
+import PaymentIcon from "@mui/icons-material/Payment";
+import { COLORS } from "@/enum/colors";
 
 const SellerProfile = () => {
   const dispatch = useDispatch();
@@ -65,20 +67,35 @@ const SellerProfile = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-16">
       <div className="grid w-full grid-cols-12 gap-8 divide-x-[2px] divide-grey-c50">
-        <div className="col-span-8 flex flex-col gap-6 text-grey-c900">
+        <div className="col-span-6 flex flex-col gap-6 text-grey-c900">
           <div className="grid grid-cols-12 items-center gap-4">
-            <div className="col-span-3 font-medium">Tên chủ shop</div>
+            <div className="col-span-3">Tên chủ shop</div>
             <div className="col-span-9 font-semibold">{seller?.name}</div>
           </div>
           <div className="grid grid-cols-12 items-center gap-4">
-            <div className="col-span-3 font-medium">Email</div>
+            <div className="col-span-3">Email</div>
             <div className="col-span-9 font-semibold">{seller?.email}</div>
           </div>
           <div className="grid grid-cols-12 items-center gap-4">
-            <div className="col-span-3 font-medium">Số điện thoại</div>
+            <div className="col-span-3">Số điện thoại</div>
             <div className="col-span-9 text-justify font-semibold">
               {seller?.phoneNumber}
             </div>
+          </div>
+        </div>
+
+        <div className="col-span-6 flex flex-col gap-6 pl-4 text-grey-c900">
+          <div className="flex items-center gap-2 font-bold">
+            <PaymentIcon style={{ color: COLORS.blue.c900, fontSize: 20 }} />
+            <div>Thông tin thanh toán</div>
+          </div>
+          <div>
+            1. Tên ngân hàng:{" "}
+            <span className="font-semibold">{seller?.bankName}</span>
+          </div>
+          <div>
+            2. Số tài khoản:{" "}
+            <span className="font-semibold">{seller?.accountNumber}</span>
           </div>
         </div>
       </div>

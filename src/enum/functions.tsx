@@ -1,10 +1,5 @@
 import moment from "moment";
-import {
-  Bidder,
-  Progress,
-  Shipping,
-  VariantItem,
-} from "./defined-type";
+import { Bidder, Progress, Shipping, VariantItem } from "./defined-type";
 import { Role } from "./constants";
 import storage from "@/apis/storage";
 
@@ -88,7 +83,7 @@ export function renderWhoCanceled(role: Role) {
     case Role.SELLER:
       return "Nhà bán";
     case Role.ADMIN:
-      return "Handmade";
+      return "Quản trị viên";
   }
 }
 

@@ -1,5 +1,11 @@
 import { ReactNode } from "react";
-import { AlertStatus, EnumOrderStatus, ProductStatus, Role, StoreStatus } from "./constants";
+import {
+  AlertStatus,
+  EnumOrderStatus,
+  ProductStatus,
+  Role,
+  StoreStatus,
+} from "./constants";
 import { Item } from "@/libs/select";
 
 export type ColTabItem = {
@@ -225,6 +231,8 @@ export type User = {
   role: Role;
   frontCard: string;
   backCard: string;
+  bankName: string;
+  accountNumber: string;
 };
 
 export type FilterTime = {
@@ -317,7 +325,7 @@ export type ProductCount = {
   totalProducts: number;
   outOfStockCount: number;
   violateCount: number;
-}
+};
 
 export interface OrderCount {
   [EnumOrderStatus.WAITING_PAYMENT]: number;

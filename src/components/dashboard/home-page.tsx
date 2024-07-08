@@ -79,8 +79,6 @@ const HomePage: React.FC = () => {
               ? `${sales?.product?.totalProducts}`
               : "0"
           }
-          rate="0.43%"
-          levelUp
         >
           <svg
             width="30"
@@ -108,8 +106,6 @@ const HomePage: React.FC = () => {
               ? `${sales?.product?.outOfStockCount}`
               : "0"
           }
-          rate="4.35%"
-          levelUp
         >
           <svg
             width="30"
@@ -132,8 +128,6 @@ const HomePage: React.FC = () => {
               ? `${sales?.product?.violateCount}`
               : "0"
           }
-          rate="2.59%"
-          levelUp
         >
           <svg
             width="30"
@@ -169,8 +163,6 @@ const HomePage: React.FC = () => {
               ? `${sales?.counts.WAITING_PAYMENT}`
               : "0"
           }
-          rate="0.95%"
-          levelDown
         >
           <svg
             width="30"
@@ -201,8 +193,6 @@ const HomePage: React.FC = () => {
               ? `${sellerFormatCurrency(sales?.totalRevenue)}`
               : "0"
           }
-          rate="0.95%"
-          levelDown
         >
           <svg
             width="24"
@@ -228,8 +218,6 @@ const HomePage: React.FC = () => {
               ? `${sellerFormatCurrency(sales?.totalRevenue * 0.8)}`
               : "0"
           }
-          rate="0.95%"
-          levelDown
         >
           <svg
             width="30"

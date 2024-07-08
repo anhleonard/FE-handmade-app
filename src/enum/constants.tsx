@@ -29,6 +29,7 @@ import { FilterTime } from "./defined-type";
 import DeliveryAuctionsTab from "@/app/auctions/my-auctions/delivery-auctions/delivery-auctions-table";
 import WaitingAuctionsTab from "@/app/auctions/my-auctions/waiting-auctions/waiting-auctions-table";
 import dynamic from "next/dynamic";
+import OverdateOrdersTable from "@/app/orders/list-orders/overdate-orders/overdate-orders-table";
 
 const SellerProfile = dynamic(
   () => {
@@ -207,6 +208,11 @@ export const orderTabs = [
     label: "Đã hủy",
     value: "6",
     content: <CancelOrdersTable />,
+  },
+  {
+    label: "Quá hạn xác nhận",
+    value: "7",
+    content: <OverdateOrdersTable />,
   },
 ];
 

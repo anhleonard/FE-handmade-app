@@ -87,6 +87,8 @@ export type UpdateSellerValues = {
   name?: string;
   email?: string;
   phoneNumber?: string;
+  bankName?: string;
+  accountNumber?: string;
 };
 
 export type CancelAuctionValues = {

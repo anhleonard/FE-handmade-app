@@ -25,6 +25,8 @@ const EditSellerModal = ({ seller, handleRefetch }: Props) => {
     name: seller?.name ?? "",
     email: seller?.email ?? "",
     phoneNumber: seller?.phoneNumber ?? "",
+    bankName: seller?.bankName ?? "",
+    accountNumber: seller?.accountNumber ?? "",
   };
 
   const onSubmit = async (values: UpdateSellerValues) => {
@@ -32,6 +34,8 @@ const EditSellerModal = ({ seller, handleRefetch }: Props) => {
       dispatch(openLoading());
       const variables: UpdateSellerValues = {
         phoneNumber: values?.phoneNumber,
+        bankName: values?.bankName,
+        accountNumber: values?.accountNumber,
       };
 
       const userId = storage.getLocalUserId();
@@ -84,8 +88,30 @@ const EditSellerModal = ({ seller, handleRefetch }: Props) => {
               name="phoneNumber"
               title="Số điện thoại"
               isRequired={false}
+              hasInputNumber
               value={formik.values.phoneNumber}
               onChange={formik.handleChange}
+            />
+
+            <MyTextField
+              id="bankName"
+              name="bankName"
+              title="Tên ngân hàng"
+              isRequired={false}
+              value={formik.values.bankName}
+              onChange={formik.handleChange}
+              placeholder="Nhập tên ngân hàng bạn dùng"
+            />
+
+            <MyTextField
+              id="accountNumber"
+              name="accountNumber"
+              title="Số tài khoản"
+              isRequired={false}
+              hasInputNumber
+              value={formik.values.accountNumber}
+              onChange={formik.handleChange}
+              placeholder="Nhập số tài khoản của bạn"
             />
 
             <Button className="!my-4 !w-fit !min-w-[200px]" type="submit">
