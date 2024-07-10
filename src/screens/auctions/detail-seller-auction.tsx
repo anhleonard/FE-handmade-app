@@ -123,9 +123,9 @@ const MyDetailSellerAuctionScreen = ({ auctionId }: Props) => {
             )}
 
             {/* RATING BY CLIENT */}
-            {auction?.status === AuctionStatus.COMPLETED && (
+            {/* {auction?.status === AuctionStatus.COMPLETED && (
               <RatingAuction type="seller" />
-            )}
+            )} */}
 
             {/* CANCEL INFORMATION */}
             {auction?.status === AuctionStatus.CANCELED && (

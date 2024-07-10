@@ -269,8 +269,6 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
         refundTotal,
       ]);
 
-      console.log({ isDepositRefunded, isTotalRefunded });
-
       if (isDepositRefunded && isTotalRefunded) {
         const updatedAuction = await updateAuction(auctionId, variables, token);
         if (updatedAuction) {
@@ -477,7 +475,7 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
                       calculateDaysAfterAccepted(
                         bidder?.estimatedDay,
                         bidder?.acceptedAt,
-                      ) >
+                      ) >=
                       0 ? (
                       `${
                         bidder?.estimatedDay -
@@ -557,38 +555,6 @@ const DetailAuction = ({ status, auction, bidder, handleRefetch }: Props) => {
                   <div className="font-bold text-grey-c900">Giá chốt</div>
                   <div className="font-medium text-primary-c900">
                     {bidder?.bidderMoney && formatCurrency(bidder?.bidderMoney)}
-                  </div>
-                </div>
-              </ListItem>
-            )}
-
-            {status === AuctionStatus.COMPLETED && (
-              <ListItem
-                className="block w-full border-b-[2px] border-grey-c50 px-4 py-4"
-                disablePadding
-              >
-                <div className="flex flex-col gap-1">
-                  <div className="font-bold text-grey-c900">
-                    Số ngày hoàn thành
-                  </div>
-                  <div className="font-medium text-primary-c900">
-                    {bidder?.estimatedDay &&
-                    bidder?.estimatedDay -
-                      calculateDaysAfterAccepted(
-                        bidder?.estimatedDay,
-                        bidder?.acceptedAt,
-                      ) >
-                      0 ? (
-                      `${
-                        bidder?.estimatedDay -
-                        calculateDaysAfterAccepted(
-                          bidder?.estimatedDay,
-                          bidder?.acceptedAt,
-                        )
-                      } ngày`
-                    ) : (
-                      <MyLabel type="error">Quá hạn</MyLabel>
-                    )}
                   </div>
                 </div>
               </ListItem>
